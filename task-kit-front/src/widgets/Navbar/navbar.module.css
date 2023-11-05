@@ -1,0 +1,28 @@
+.navbar {
+	margin: 40px 0 0;
+	max-height: 90vh;
+	padding: 0 16px;
+	position: sticky;
+	top: 40px;
+	width: 256px;
+}
+
+.navbarLi {
+	border-radius: 8px;
+	font-weight: 500;
+}
+
+.active {
+	background-color: #e9f2ff;
+	color: #0c66e4;
+}
+
+@media (hover: hover) {
+	.navbarLi:hover {
+		background: #091e4224;
+		cursor: pointer;
+		transition-property: background-color, border-color, box-shadow;
+		transition-duration: 85ms;
+		transition-timing-function: ease;
+	}
+}

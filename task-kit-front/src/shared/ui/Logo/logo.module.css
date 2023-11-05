@@ -1,0 +1,16 @@
+.logo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.logoIcon {
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+}
+
+.logoText {
+	text-transform: uppercase;
+	color: #f5f1ef;
+}

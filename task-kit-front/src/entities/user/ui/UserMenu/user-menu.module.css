@@ -1,0 +1,31 @@
+.title {
+	text-transform: uppercase;
+	line-height: 16px;
+	padding: 0 20px;
+}
+
+.userInfo {
+	display: flex;
+	padding: 8px 20px;
+	max-width: 100%;
+}
+
+.userName p {
+	font-size: 14px;
+	line-height: 20px;
+	font-weight: 400;
+}
+
+.userName p:first-child {
+	text-transform: capitalize;
+}
+
+.userName p {
+	margin-left: 8px;
+}
+
+.teamKit {
+	text-transform: uppercase;
+	line-height: 16px;
+	padding: 0 20px;
+}

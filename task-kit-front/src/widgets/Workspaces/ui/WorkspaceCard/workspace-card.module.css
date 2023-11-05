@@ -1,0 +1,48 @@
+a {
+	flex: 1;
+	max-width: 25%;
+}
+
+.card {
+	position: relative;
+	padding: 8px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+	border-radius: 3px;
+}
+
+.cardContent {
+	position: relative;
+	height: 80px;
+}
+
+.cardName {
+	position: absolute;
+	left: 0;
+	top: 0;
+	font-size: 16px;
+	color: #ffff;
+	z-index: 2;
+}
+
+.cardFade {
+	display: none;
+}
+
+@media (hover: hover) {
+	.card:hover {
+		cursor: pointer;
+	}
+
+	.card:hover .cardFade {
+		display: block;
+		position: absolute;
+		background-color: #00000026;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		top: 0;
+		z-index: 1;
+	}
+}
