@@ -1,0 +1,111 @@
+.taskWrapper {
+	position: fixed;
+	inset: 0;
+	z-index: 3;
+	backdrop-filter: blur(2px);
+	background-color: #0000007d;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.task {
+	background-color: #f1f2f4;
+	border-radius: 10px;
+
+	display: flex;
+	gap: 30px;
+
+	position: relative;
+	width: 50%;
+	padding: 12px;
+}
+
+.leftSide {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	flex: 1;
+}
+.rightSide {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 10%;
+}
+.taskHeader {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.taskSubscribe {
+	width: fit-content;
+}
+.close {
+	position: absolute;
+	right: 3%;
+	top: 3%;
+
+	line-height: 90%;
+	font-size: 24px;
+
+	border: transparent;
+	outline: transparent;
+	background-color: transparent;
+}
+.textEditor {
+	height: 200px;
+}
+.comment {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.comment textarea {
+	min-height: 40px;
+	width: 100%;
+	resize: none;
+	padding: 6px;
+	border-radius: 6px;
+	border: transparent;
+	outline: transparent;
+
+}
+.btnWrapper {
+    display: flex;
+    width: 100%;
+    margin-top: 60px;
+    gap: 12px;
+}
+.btnWrapper button {
+	background-color: transparent;
+	outline: transparent;
+    border: transparent;
+	background-color: transparent;
+	border-radius: 4px;
+	padding: 8px 6px;
+    font-size: 16px;
+    width: fit-content;
+}
+.btnWrapper button:nth-child(1) {
+	background-color: #0e67e6;
+    color: #ffffff;
+}
+.btnWrapper button:nth-child(2) {
+
+}
+.btnWrapper button:nth-child(3) {
+	background-color: #e6e6e8;
+    margin-left: auto;
+}
+.commentWrapper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+.commentWrapper img {
+    width: 30px;
+    height: 30px;
+}

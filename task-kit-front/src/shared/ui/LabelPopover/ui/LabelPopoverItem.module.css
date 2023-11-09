@@ -1,0 +1,24 @@
+.item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.mark {
+    outline: transparent;
+    border: transparent;
+    border-radius: 4px;
+    min-height: 30px;
+    width: 180px;
+}
+.item button {
+    background-color: transparent;
+    outline: transparent;
+    border: transparent;
+
+
+}
+
+.item button img{
+    width: 100%;
+    height: 100%;
+}

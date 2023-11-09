@@ -1,0 +1,19 @@
+.chip {
+    padding: 6px;
+    background-color: #cdced04f;
+
+    border-radius: 4px  ;
+
+    width: 100%;
+
+    display: flex;
+    gap: 4px;
+
+    color: rgb(33, 33, 40);
+    font-weight: 500;
+}
+
+.chip img {
+    width: 20px;
+    height: 20px;
+}

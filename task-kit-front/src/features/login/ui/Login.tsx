@@ -47,7 +47,7 @@ export const Login: FC = () => {
 			);
 			navigate('/home');
 		}
-	}, [data, isSuccess]);
+	}, [data, isSuccess, navigate, dispatch]);
 
 	return (
 		<Box className={styles.login}>

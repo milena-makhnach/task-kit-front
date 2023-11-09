@@ -1,0 +1,23 @@
+.container {
+    border-radius: 10px;
+    padding: 12px;
+
+    border: 1px solid #DEE6F3;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.container > p {
+    text-align: center;
+    font-weight: 500;
+}
+
+.container input {
+    width: 100%;
+    border: 1px solid #E3E3E3;
+    outline: transparent;
+    min-height: 30px;
+    padding: 4px 6px;
+    border-radius: 4px;
+}

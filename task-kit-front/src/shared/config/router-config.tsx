@@ -10,9 +10,7 @@ export const routerConfig: RouteObject[] = [
 	{
 		path: '/home',
 		element: (
-			<PrivateRoute>
 				<HomePage />
-			</PrivateRoute>
 		),
 	},
 ];
