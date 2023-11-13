@@ -22,6 +22,7 @@ import { api } from '@/shared/api/base-query';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Photo } from '@/shared/types/photo';
 import { CreateBoard } from '@/shared/types/board';
+import { flushSync } from 'react-dom';
 
 type createBoardMenuProps = {
 	anchorEl: HTMLElement | null;
@@ -104,7 +105,6 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 		}
 	}, [isBoardCreated, newBoard]);
 
-
 	return (
 		<Menu
 			anchorEl={anchorEl}
@@ -117,11 +117,10 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 					minWidth: '300px',
 				},
 			}}
-			sx={{ paddintTop: 0, borderRadius: '8px', minWidth: '300px' }}>
+			sx={{ paddintTop: 0, borderRadius: '8px', minWidth: '300px' }}
+		>
 			<Box className={styles.menuHeader}>
-				<Typography
-					className={styles.menuTitle}
-					sx={{ lineHeight: '40px' }}>
+				<Typography className={styles.menuTitle} sx={{ lineHeight: '40px' }}>
 					Создать доску
 				</Typography>
 				<IconButton className={styles.menuClose} onClick={handleClose}>
@@ -137,26 +136,23 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 								selectedPhoto ? selectedPhoto.file : ''
 							})`,
 							background: selectedColor ? selectedColor : '',
-						}}>
+						}}
+					>
 						<img src={createTaskIcon} alt='create task' />
 					</Box>
 				</Box>
 				<Box className={styles.menuPhotos}>
-					<Typography className={styles.menuPhotosLabel}>
-						Фон
-					</Typography>
+					<Typography className={styles.menuPhotosLabel}>Фон</Typography>
 					<Box>
 						<Box className={styles.menuPhotoPicker}>
 							{data?.map((photo) => (
 								<Box
 									className={styles.menuPhotoPickerItem}
 									key={photo.id}
-									onClick={() => handleSelectBg(photo)}>
+									onClick={() => handleSelectBg(photo)}
+								>
 									<Box className={styles.menuPhoto}>
-										<img
-											src={photo.file}
-											alt={photo.alt_desc}
-										/>
+										<img src={photo.file} alt={photo.alt_desc} />
 									</Box>
 								</Box>
 							))}
@@ -166,10 +162,12 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 								<Box
 									className={styles.menuColorPickerItem}
 									key={color}
-									onClick={() => handleSelectBg(color)}>
+									onClick={() => handleSelectBg(color)}
+								>
 									<Box
 										className={styles.menuPhoto}
-										sx={{ backgroundColor: color }}></Box>
+										sx={{ backgroundColor: color }}
+									></Box>
 								</Box>
 							))}
 						</Box>
@@ -196,7 +194,8 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 						disabled={!boardName || isLoading}
 						fullWidth
 						sx={{ marginTop: '16px' }}
-						onClick={handleCreateBoard}>
+						onClick={handleCreateBoard}
+					>
 						Создать доску
 					</Button>
 				</form>

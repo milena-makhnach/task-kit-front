@@ -11,17 +11,17 @@ export const routerConfig: RouteObject[] = [
 	{
 		path: '/home',
 		element: (
-			<PrivateRoute>
+			// <PrivateRoute>
 				<HomePage />
-			</PrivateRoute>
+			// </PrivateRoute>
 		),
 	},
 	{
 		path: '/board/:board_id',
 		element: (
-			<PrivateRoute>
+			// <PrivateRoute>
 				<BoardPage />
-			</PrivateRoute>
+			// </PrivateRoute>
 		),
 	},
 ];

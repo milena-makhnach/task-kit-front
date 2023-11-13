@@ -19,4 +19,5 @@
 .contentHeader {
 	display: flex;
 	gap: 14px;
+	margin-block: 14px;
 }

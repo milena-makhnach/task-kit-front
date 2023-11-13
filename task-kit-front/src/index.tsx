@@ -15,7 +15,7 @@ import './index.css';
 const router = createBrowserRouter(routerConfig);
 
 const theme = createTheme({
-	...baseTheme,
+	// ...baseTheme,
 	palette: { primary: { ...themePalette.grayPalette } },
 });
 

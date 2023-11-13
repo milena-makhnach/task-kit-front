@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import { api } from '@/shared/api/base-query';
 import { BoardResponse } from '@/shared/types/board';
 import { useQuery } from '@tanstack/react-query';
-
+import userAvatar from '../../assets/icons/user.svg';
 const openedMixin = (theme: Theme): CSSObject => ({
 	width: 240,
 	transition: theme.transitions.create('width', {
@@ -82,14 +82,34 @@ export const BoardSidebar: FC = () => {
 	};
 
 	return (
-		<Drawer variant='permanent' open={open}>
+		<Drawer
+			variant='permanent'
+			open={open}
+			sx={{ transform: 'translateY(1px)' }}
+		>
 			<DrawerHeader>
 				<IconButton onClick={toggleDrawer}>
 					{open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
 				</IconButton>
 			</DrawerHeader>
 			<Divider />
-			<Box>Рабочее пространство</Box>
+			<Box
+				sx={{
+					fontSize: '16px',
+					marginBlock: '6px',
+					display: 'flex',
+					justifyContent: 'start',
+					alignItems: 'center',
+					gap: '4px',
+				}}
+			>
+				<img
+					style={{ width: '30px', height: '30px', marginInline: open ? '0px' : '16px', transition: 'all .3s linear' }}
+					alt=''
+					src={userAvatar}
+				/>
+				Рабочее пространство
+			</Box>
 			<Divider />
 			<List>
 				{data?.map((board) => (
@@ -99,16 +119,15 @@ export const BoardSidebar: FC = () => {
 								minHeight: 48,
 								justifyContent: open ? 'initial' : 'center',
 								px: 2.5,
-							}}>
+							}}
+						>
 							<Link to={`/board/${board.id}`}>
 								<Box
 									sx={{
 										backgroundImage: `url(${
 											board.photo ? board.photo.file : ''
 										})`,
-										background: board.bg_color
-											? board.bg_color
-											: '',
+										background: board.bg_color ? board.bg_color : '',
 										width: '20px',
 										height: '20px',
 									}}

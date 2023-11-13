@@ -12,6 +12,7 @@ import {
 } from '@/shared/types/column';
 import { api } from '@/shared/api/base-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import closeIcon from '../../../assets/icons/close.svg';
 
 const getAllColumns = async ({ queryKey }: { queryKey: any }) => {
 	const [_, { board_id }] = queryKey;
@@ -144,7 +145,7 @@ export const Board = () => {
 							onChange={(e) => setColumnName(e.target.value)}
 							placeholder='ввести заголовок списка'
 						/>
-						<div>
+						<div className={styles.buttonsContainer}>
 							<button
 								className={styles.taskCreator}
 								onClick={buttonHandler}>
@@ -153,7 +154,7 @@ export const Board = () => {
 							<button
 								className={styles.close}
 								onClick={() => setIsColumnCreatorOpen(false)}>
-								X
+								<img alt='' src={closeIcon} />
 							</button>
 						</div>
 					</>

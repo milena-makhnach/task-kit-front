@@ -13,7 +13,7 @@ import { useGetAllBoardsQuery } from '@/shared/api/board';
 import { Chip } from '../../shared/ui/Chip/Chip';
 import { CreateBoard, BoardResponse } from '../../shared/types/board';
 import { api } from '@/shared/api/base-query';
-
+import mockUserImage from '../../assets/icons/user.svg'
 const getAllBoards = async () => {
 	const { data } = await api.get('/board/');
 
@@ -36,7 +36,8 @@ export const Workspaces: FC = () => {
 				Ваши рабочие пространства
 			</Typography>
 			<Box className={styles.contentHeader}>
-				<p>Hello suka</p>
+				<img alt='' src={mockUserImage} />
+				<p>User Name</p>
 			</Box>
 			<Box className={styles.cardsWrapper}>
 				{data?.map((board) => (
