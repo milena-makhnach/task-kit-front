@@ -20,8 +20,14 @@ import { LabelPopover } from '../LabelPopover/LabelPopover';
 import { MembersPopover } from '../MembersPopover/MembersPopover';
 import { FilePopover } from '../FilePopover/FilePopover';
 import { DatePopover } from '../DatePopover/DatePopover';
+import { TaskResponse } from '@/shared/types/task';
+import { api } from '@/shared/api/base-query';
+import { useQuery } from '@tanstack/react-query';
+
 type TaskCardType = {
 	closeTask: React.Dispatch<React.SetStateAction<boolean>>;
+	columnName: string;
+	taskId: number;
 };
 
 const taskSideBarItems = [
@@ -34,19 +40,42 @@ const taskSideBarItems = [
 	{ id: 7, img: boardIcon, text: 'Поля', item: <LabelPopover /> },
 	{ id: 8, img: removeIcon, text: 'Удалить', item: <LabelPopover /> },
 ];
-export const TaskCard: FC<TaskCardType> = ({ closeTask }) => {
+
+const getTask = async ({ queryKey }: { queryKey: any }) => {
+	const [_, { task_id }] = queryKey;
+
+	const { data } = await api.get(`/task/${task_id}`);
+
+	return data;
+};
+
+export const TaskCard: FC<TaskCardType> = ({
+	closeTask,
+	columnName,
+	taskId,
+}) => {
 	const [value, setValue] = useState('');
+
+	const { data } = useQuery({
+		queryFn: getTask,
+		queryKey: ['task', { task_id: taskId }],
+	});
+
+	console.log(data);
+
 	return (
 		<Box className={styles.taskWrapper}>
 			<Box className={styles.task}>
-				<button className={styles.close} onClick={() => closeTask(false)}>
+				<button
+					className={styles.close}
+					onClick={() => closeTask(false)}>
 					x
 				</button>
 				<Box className={styles.leftSide}>
 					<Box className={styles.taskHeader}>
 						<Box className={styles.taskname}>
-							<p className={styles.title}>TaskName</p>
-							<p>в колонке: TaskColumn</p>
+							<p className={styles.title}>{data?.name}</p>
+							<p>в колонке: {columnName}</p>
 						</Box>
 						<Box className={styles.taskSubscribe}>
 							<p>уведомления</p>
@@ -79,7 +108,12 @@ export const TaskCard: FC<TaskCardType> = ({ closeTask }) => {
 				<Box className={styles.rightSide}>
 					<p>Добавьте карточку</p>
 					{taskSideBarItems.map((el) => (
-						<LabelPopoverButton key={el.id} img={el.img} text={el.text} item={el.item} />
+						<LabelPopoverButton
+							key={el.id}
+							img={el.img}
+							text={el.text}
+							item={el.item}
+						/>
 					))}
 				</Box>
 			</Box>

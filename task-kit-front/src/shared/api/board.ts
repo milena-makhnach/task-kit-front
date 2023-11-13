@@ -1,34 +1,38 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQuery } from '@/shared/api/base-query';
-import { Board, BoardResponse } from '../types/board';
+import { CreateBoard, BoardResponse } from '../types/board';
 
 export const board = createApi({
 	reducerPath: 'board',
 	baseQuery,
-	tagTypes: ['board', 'boards'],
+	tagTypes: ['board'],
+	refetchOnReconnect: true,
 	endpoints: (builder) => ({
-		createBoard: builder.mutation<BoardResponse, Board>({
+		createBoard: builder.mutation<BoardResponse, CreateBoard>({
 			query: (body) => ({
 				url: '/board',
 				method: 'POST',
 				body,
 			}),
-			invalidatesTags: ['board'],
+			invalidatesTags: (result, error, arg) => [
+				{ type: 'board', id: result?.id },
+			],
 		}),
 		getAllBoards: builder.query<BoardResponse[], void>({
 			query: () => '/board',
-			providesTags: ['boards'],
-		}),
-		getBoardById: builder.query<BoardResponse, number>({
-			query: (id) => `/board/${id}`,
-			providesTags: ['boards'],
+			providesTags: (result, error, arg) =>
+				result
+					? [
+							...result.map(({ id }) => ({
+								type: 'board' as const,
+								id,
+							})),
+							'board',
+					  ]
+					: ['board'],
 		}),
 	}),
 });
 
-export const {
-	useCreateBoardMutation,
-	useGetAllBoardsQuery,
-	useGetBoardByIdQuery,
-} = board;
+export const { useCreateBoardMutation, useGetAllBoardsQuery } = board;

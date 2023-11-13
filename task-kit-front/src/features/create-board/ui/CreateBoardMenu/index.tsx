@@ -10,19 +10,34 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { useGetPhotosQuery } from '@/shared/api/document';
 import { themePalette } from '@/shared/theme/index';
 import { TaskPhoto } from '@/shared/types/task-types';
 import { Input } from '@/shared/ui';
-import { useCreateBoardMutation } from '@/shared/api/board';
 
 import createTaskIcon from '@/assets/icons/create-task.svg';
 
 import styles from './create-board-menu.module.css';
+import { redirect } from 'react-router-dom';
+import { api } from '@/shared/api/base-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Photo } from '@/shared/types/photo';
+import { CreateBoard } from '@/shared/types/board';
 
 type createBoardMenuProps = {
 	anchorEl: HTMLElement | null;
 	setAnchorEl: (el: HTMLElement | null) => void;
+};
+
+const getAllPhotos = async () => {
+	const { data } = await api.get('/photo/');
+
+	return data;
+};
+
+const createBoard = async (body: CreateBoard) => {
+	const { data } = await api.post('/board/', body);
+
+	return data;
 };
 
 export const CreateBoardMenu: FC<createBoardMenuProps> = ({
@@ -33,8 +48,17 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 	const [selectedColor, setSelectedColor] = useState<string | null>(null);
 	const [boardName, setBoardName] = useState<string>('');
 
-	const { data, isSuccess } = useGetPhotosQuery();
-	const [createBoard] = useCreateBoardMutation();
+	const { data, isSuccess } = useQuery<Photo[]>({
+		queryKey: ['photos'],
+		queryFn: getAllPhotos,
+	});
+
+	const {
+		mutate,
+		data: newBoard,
+		isPending: isLoading,
+		isSuccess: isBoardCreated,
+	} = useMutation({ mutationFn: createBoard, mutationKey: ['boards'] });
 
 	const onBoardNameChangge = (e: ChangeEvent<HTMLInputElement>) => {
 		setBoardName(e.target.value);
@@ -58,11 +82,28 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 		return Object.entries(themePalette).map(([_, value]) => value.main);
 	}, []);
 
+	const handleCreateBoard = () => {
+		const board = {
+			name: boardName,
+			bg_color: selectedColor || null,
+			photo_id: selectedPhoto ? selectedPhoto.id : null,
+		};
+
+		mutate(board);
+	};
+
 	useEffect(() => {
 		if (isSuccess && data) {
 			handleSelectBg(data[0]);
 		}
 	}, [isSuccess, data]);
+
+	useEffect(() => {
+		if (newBoard && isBoardCreated) {
+			redirect(`/board/${newBoard?.name}`);
+		}
+	}, [isBoardCreated, newBoard]);
+
 
 	return (
 		<Menu
@@ -152,9 +193,10 @@ export const CreateBoardMenu: FC<createBoardMenuProps> = ({
 					<Button
 						color='primary'
 						variant='contained'
-						disabled={!boardName}
+						disabled={!boardName || isLoading}
 						fullWidth
-						sx={{ marginTop: '16px' }}>
+						sx={{ marginTop: '16px' }}
+						onClick={handleCreateBoard}>
 						Создать доску
 					</Button>
 				</form>

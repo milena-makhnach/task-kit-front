@@ -21,11 +21,7 @@ export const HomePage: FC = () => {
 				<Box>dppdp</Box>
 			</Navbar>
 			<Box className={styles.content}>
-				<Workspaces />
-
-				<Board />
-
-				
+				<Workspaces />				
 			</Box>
 		</Box>
 	);

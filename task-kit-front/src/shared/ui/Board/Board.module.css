@@ -4,7 +4,7 @@
 	height: 100%;
 	min-height: 40vh;
 
-    gap: 14px;
+	gap: 14px;
 }
 
 .columnCreator {
@@ -29,61 +29,67 @@
 	backdrop-filter: blur(3.5px);
 	-webkit-backdrop-filter: blur(3.5px);
 	border-radius: 10px;
-	border: 1px solid #DFE0E4;
+	border: 1px solid #dfe0e4;
 
 	order: 1;
 }
 
 .columnCreatorBack {
-    width: 230px;
-    border-radius: 10px;
+	width: 230px;
+	border-radius: 10px;
 	padding: 12px;
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 
 	border: transparent;
 	outline: transparent;
 
-    order: 1;
+	order: 1;
 
-    height: fit-content;
+	height: fit-content;
 }
 
 .textInput {
-    width: 96%;
-    height: 60px;
-    line-height: 10px;
-    padding: 4px;
-    border-radius: 6px;
-    background-color: #FFFFFF;
-    border: 1px solid #DFE0E4;
+	width: 96%;
+	height: 60px;
+	line-height: 10px;
+	padding: 4px;
+	border-radius: 6px;
+	background-color: #ffffff;
+	border: 1px solid #dfe0e4;
 
-    border: transparent;
-    outline: transparent;
+	border: transparent;
+	outline: transparent;
 
-    resize: none;
+	resize: none;
 }
 .close {
-    font-size: 24px;
-    background-color: transparent;
-    border: transparent;
-    outline: transparent;
+	font-size: 24px;
+	background-color: transparent;
+	border: transparent;
+	outline: transparent;
 }
 .taskCreator {
-    display: inline-flex;
-    flex-direction: column;
-    gap: 2px;
-    background: #1265E1;
-    padding: 4px 6px;
-    outline: transparent;
-    border: transparent;
-    border-radius: 4px;
+	display: inline-flex;
+	flex-direction: column;
+	gap: 2px;
+	background: #1265e1;
+	padding: 4px 6px;
+	outline: transparent;
+	border: transparent;
+	border-radius: 4px;
 
-    font-size: 16px;
-    border: 1px solid #DFE0E4;
+	font-size: 16px;
+	border: 1px solid #dfe0e4;
 
-    color: #FFFFFF;
+	color: #ffffff;
 
-    gap: 4px;
-    order: 1;
+	gap: 4px;
+	order: 1;
+}
+
+.columnsContainer {
+	display: flex;
+	list-style-type: none;
+	gap: 15px;
 }

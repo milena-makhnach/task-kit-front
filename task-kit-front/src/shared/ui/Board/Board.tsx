@@ -1,58 +1,186 @@
-import { useState } from 'react';
-import styles from './Board.module.css';
-
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box/Box';
+import { useParams } from 'react-router-dom';
+import { Reorder } from 'framer-motion';
+
 import { Column } from '../Column/Column';
 
+import styles from './Board.module.css';
+import {
+	ColumnResponse,
+	ColumnResponse as ColumnType,
+} from '@/shared/types/column';
+import { api } from '@/shared/api/base-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+const getAllColumns = async ({ queryKey }: { queryKey: any }) => {
+	const [_, { board_id }] = queryKey;
+	const { data } = await api.get(`/board/${board_id}/columns`);
+	return data;
+};
+
+const createColumn = async (body: any) => {
+	const { board_id, ...rest } = body;
+	const { data } = await api.post(`/board/${board_id}/columns`, rest);
+	return data;
+};
+
+const createTask = async (body: any) => {
+	const { data } = await api.post(`/task/`, body);
+	return data;
+};
+
+const updateColumn = async (body: any) => {
+	const { board_id, id, ...rest } = body;
+	const { data } = await api.put(`/board/${board_id}/columns/${id}`, rest);
+	return data;
+};
+
 export const Board = () => {
+	const { board_id } = useParams();
+	const queryClient = useQueryClient();
+
 	const [isColumnCreateoOpen, setIsColumnCreatorOpen] = useState(false);
 	const [columnName, setColumnName] = useState<string>('');
-	const [columns, setColumns] = useState<string[]>([]);
+	const [columns, setColumns] = useState<ColumnType[]>([]);
 
-	const [taskName, setTaskName] = useState<string>('');
-	const [tasks, setTasks] = useState<string[]>([]);
+	const { data, isSuccess } = useQuery({
+		queryFn: getAllColumns,
+		queryKey: ['columns', { board_id }],
+	});
 
-	const buttonHandler = () => {
-        setColumns((prev) => [...prev, columnName]);
-        setColumnName('')
+	const { mutate } = useMutation({
+		mutationFn: createColumn,
+		mutationKey: ['columns'],
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['columns'] });
+		},
+	});
+
+	const { mutate: mutateTask } = useMutation({
+		mutationFn: createTask,
+		mutationKey: ['tasks'],
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['columns'] });
+		},
+	});
+
+	const { mutate: mutateColumn } = useMutation({
+		mutationFn: updateColumn,
+		mutationKey: ['column'],
+	});
+
+	const buttonHandler = async () => {
+		if (!columnName) {
+			setIsColumnCreatorOpen(false);
+			return;
+		}
+
+		const newColumn = {
+			name: columnName,
+			order: columns.length + 1,
+			tasks: [],
+		};
+
+		setColumnName('');
+		setIsColumnCreatorOpen(false);
+
+		mutate({
+			...newColumn,
+			board_id: board_id as string,
+		});
 	};
+
+	const handleCreateTask = async (columnId: number, taskName: string) => {
+		const columnIndexToChange = columns.findIndex(
+			(column) => column.id === columnId
+		);
+
+		const newTask = {
+			name: taskName,
+			order: columns[columnIndexToChange].tasks.length + 1,
+			column_id: columnId,
+		};
+
+		mutateTask(newTask);
+	};
+
+	const updateColumnOrder = (item: ColumnResponse) => {
+		const findColumnIndex = columns.findIndex(
+			(column) => column.id === item.id
+		);
+
+		mutateColumn({
+			order: findColumnIndex + 1,
+			board_id: `${board_id}`,
+			id: item.id,
+		});
+	};
+
+	useEffect(() => {
+		if (isSuccess) {
+			setColumns(data);
+		}
+	}, [isSuccess, data]);
+
 	return (
 		<Box className={styles.board}>
 			<button
-				className={isColumnCreateoOpen ? styles.columnCreatorBack : styles.columnCreator}
-				onClick={
-					isColumnCreateoOpen ? () => {} : () => setIsColumnCreatorOpen(true)
+				className={
+					isColumnCreateoOpen
+						? styles.columnCreatorBack
+						: styles.columnCreator
 				}
-			>
+				onClick={
+					isColumnCreateoOpen
+						? () => {}
+						: () => setIsColumnCreatorOpen(true)
+				}>
 				{isColumnCreateoOpen ? (
 					<>
-                        <textarea
-                            className={styles.textInput}
+						<textarea
+							className={styles.textInput}
 							value={columnName}
 							onChange={(e) => setColumnName(e.target.value)}
 							placeholder='ввести заголовок списка'
-                        />
-                        <div>
-
-						<button className={styles.taskCreator} onClick={buttonHandler}>добавить колонку</button>{' '}
-						<button className={styles.close} onClick={() => setIsColumnCreatorOpen(false)}>X</button>
-                        </div>
+						/>
+						<div>
+							<button
+								className={styles.taskCreator}
+								onClick={buttonHandler}>
+								добавить колонку
+							</button>{' '}
+							<button
+								className={styles.close}
+								onClick={() => setIsColumnCreatorOpen(false)}>
+								X
+							</button>
+						</div>
 					</>
 				) : (
 					'+ Добавьте еще одну колонку'
 				)}
 			</button>
-
-			{columns.map((el) => (
-				<Column
-					columnName={el}
-					setTaskName={setTaskName}
-					setTasks={setTasks}
-					taskName={taskName}
-					tasks={tasks}
-					key={el}
-				/>
-			))}
+			<Reorder.Group
+				values={columns}
+				onReorder={setColumns}
+				className={styles.columnsContainer}
+				axis='x'>
+				{columns?.map((el) => (
+					<Reorder.Item
+						key={el.order}
+						value={el}
+						onDragEnd={() => updateColumnOrder(el)}>
+						<Column
+							tasks={el.tasks}
+							columnId={el.id}
+							columnName={el.name}
+							key={el.id}
+							handleCreateTask={handleCreateTask}
+						/>
+					</Reorder.Item>
+				))}
+			</Reorder.Group>
 		</Box>
 	);
 };

@@ -12,22 +12,32 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { useDispatch } from 'react-redux';
 
-import { document } from '../api/document';
+import { photos } from '../api/photos';
 import { auth } from '../api/auth';
 import { board } from '../api/board';
+import { column } from '../api/column';
 import userSlice from '@/entities/user/slice/user-slice';
+import { task } from '../api/task';
 
 const rootReducer = combineReducers({
 	user: userSlice,
 	[auth.reducerPath]: auth.reducer,
-	[document.reducerPath]: document.reducer,
+	[photos.reducerPath]: photos.reducer,
 	[board.reducerPath]: board.reducer,
+	[column.reducerPath]: column.reducer,
+	[task.reducerPath]: task.reducer,
 });
 
 const persistConfig = {
 	key: 'root',
 	storage,
-	blacckList: [auth.middleware, document.middleware, board.middleware],
+	blacckList: [
+		auth.middleware,
+		board.middleware,
+		photos.middleware,
+		column.middleware,
+		task.middleware,
+	],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -46,7 +56,13 @@ export const store = configureStore({
 					REGISTER,
 				],
 			},
-		}).concat([auth.middleware, document.middleware, board.middleware]),
+		}).concat([
+			auth.middleware,
+			board.middleware,
+			photos.middleware,
+			column.middleware,
+			task.middleware,
+		]),
 	devTools: process.env.NODE_ENV !== 'production',
 });
 
