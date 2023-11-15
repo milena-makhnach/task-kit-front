@@ -4,6 +4,7 @@ import { HomePage } from '@/pages/HomePage';
 import { RouteObject } from 'react-router-dom';
 import { PrivateRoute } from '../ui/PrivateRoute';
 import { BoardPage } from '@/pages/BoardPage';
+import { ProfilePage } from '../../pages/ProfilePage';
 
 export const routerConfig: RouteObject[] = [
 	{ path: '/', element: <Login /> },
@@ -12,7 +13,7 @@ export const routerConfig: RouteObject[] = [
 		path: '/home',
 		element: (
 			// <PrivateRoute>
-				<HomePage />
+			<HomePage />
 			// </PrivateRoute>
 		),
 	},
@@ -20,8 +21,13 @@ export const routerConfig: RouteObject[] = [
 		path: '/board/:board_id',
 		element: (
 			// <PrivateRoute>
-				<BoardPage />
+			<BoardPage />
 			// </PrivateRoute>
 		),
+	},
+	{
+		path: '/profile',
+		element:  <ProfilePage />
+
 	},
 ];

@@ -1,10 +1,10 @@
 import { Photo } from './photo';
 
 export interface Task {
-	deadline: Date;
+	deadline: Date | null;
 	name: string;
-	description: string;
-	photo: Photo;
+	description: string | null;
+	photo: Photo | null;
 	user_id: number;
 	column_id: number;
 	order: number;

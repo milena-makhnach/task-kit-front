@@ -12,6 +12,7 @@ type ColumnType = {
 	tasks: TaskResponse[];
 	columnName: string;
 	handleCreateTask: (columnId: number, taskName: string) => void;
+	dragColumnEvent: (value: boolean) => void,
 };
 
 const updateTask = async (body: any) => {
@@ -25,6 +26,7 @@ export const Column: FC<ColumnType> = ({
 	tasks,
 	columnName,
 	handleCreateTask,
+	dragColumnEvent,
 }) => {
 	const [isTaskCreatorOpen, setIsTaskCreatorOpen] = useState(false);
 	const [isTaskOpen, setIsTaskOpen] = useState(false);
@@ -62,6 +64,7 @@ export const Column: FC<ColumnType> = ({
 		setTaskList(tasks);
 	}, []);
 
+
 	return (
 		<Box className={styles.column}>
 			<p>{columnName}</p>
@@ -74,11 +77,13 @@ export const Column: FC<ColumnType> = ({
 					<Reorder.Item
 						value={el}
 						key={el.id}
+						onMouseDown={() => dragColumnEvent(false)}
+						onMouseUp={() =>  dragColumnEvent(true)}
 						onDragEnd={() => handleUpdateTask(el)}
 						className={styles.taskLi}>
 						<button
 							className={styles.task}
-							onClick={() => {
+							onClick={(e) => {
 								setIsTaskOpen(true);
 								setSelectedTaskId(el.id);
 							}}>

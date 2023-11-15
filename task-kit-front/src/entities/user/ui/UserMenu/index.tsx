@@ -6,8 +6,8 @@ import { useLogoutMutation } from '@/shared/api/auth';
 import { logoutUser } from '@/entities/user/slice/user-slice';
 import { UserAvatar } from '@/entities/user/ui/UserAvatar';
 import { RootState, useAppDispatch } from '@/shared/store/store';
-
 import styles from './user-menu.module.css';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 
 type userMenuProps = {
 	anchorEl: null | HTMLElement;
@@ -16,7 +16,7 @@ type userMenuProps = {
 
 export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 	const dispatch = useAppDispatch();
-
+	const navigate = useNavigate()
 	const [logout] = useLogoutMutation();
 
 	const { firstname, lastname, email, avatar } = useSelector(
@@ -31,6 +31,10 @@ export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 		await logout();
 		dispatch(logoutUser());
 		handleClose();
+	};
+	const handleToProfile = () => {
+		setAnchorEl(null);
+		navigate('/profile')
 	};
 
 	return (
@@ -82,7 +86,7 @@ export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 					padding: '8px 20px',
 					fontSize: '14px',
 				}}
-				onClick={handleClose}>
+				onClick={handleToProfile}>
 				Профиль
 			</MenuItem>
 			<MenuItem
@@ -91,7 +95,7 @@ export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 					fontSize: '14px',
 				}}
 				onClick={handleClose}>
-				Настрйоки
+					Настрйоки
 			</MenuItem>
 			<MenuItem
 				sx={{

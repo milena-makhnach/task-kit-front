@@ -37,6 +37,43 @@ const updateColumn = async (body: any) => {
 	return data;
 };
 
+const calumns = [
+	{
+		name: 'jopa',
+		order: 1,
+		id: 19,
+		tasks: [
+			{
+				id: 19,
+				name: 'task1',
+				description: null,
+				deadline: null,
+				order: 2,
+				photo: null,
+				user_id: 1,
+				column_id: 2,
+			},
+		],
+	},
+	{
+		name: 'jopa2',
+		order: 2,
+		id: 119,
+		tasks: [
+			{
+				id: 119,
+				name: 'task1123',
+				description: null,
+				deadline: null,
+				order: 3,
+				photo: null,
+				user_id: 1,
+				column_id: 2,
+			},
+		],
+	},
+];
+
 export const Board = () => {
 	const { board_id } = useParams();
 	const queryClient = useQueryClient();
@@ -118,6 +155,12 @@ export const Board = () => {
 		});
 	};
 
+	const [canDragColumn, setCanDragColumn] = useState(true)
+
+	const changeDrag = (value: boolean) => {
+		setCanDragColumn(value)
+	}
+
 	useEffect(() => {
 		if (isSuccess) {
 			setColumns(data);
@@ -128,15 +171,12 @@ export const Board = () => {
 		<Box className={styles.board}>
 			<button
 				className={
-					isColumnCreateoOpen
-						? styles.columnCreatorBack
-						: styles.columnCreator
+					isColumnCreateoOpen ? styles.columnCreatorBack : styles.columnCreator
 				}
 				onClick={
-					isColumnCreateoOpen
-						? () => {}
-						: () => setIsColumnCreatorOpen(true)
-				}>
+					isColumnCreateoOpen ? () => {} : () => setIsColumnCreatorOpen(true)
+				}
+			>
 				{isColumnCreateoOpen ? (
 					<>
 						<textarea
@@ -146,14 +186,13 @@ export const Board = () => {
 							placeholder='ввести заголовок списка'
 						/>
 						<div className={styles.buttonsContainer}>
-							<button
-								className={styles.taskCreator}
-								onClick={buttonHandler}>
+							<button className={styles.taskCreator} onClick={buttonHandler}>
 								добавить колонку
 							</button>{' '}
 							<button
 								className={styles.close}
-								onClick={() => setIsColumnCreatorOpen(false)}>
+								onClick={() => setIsColumnCreatorOpen(false)}
+							>
 								<img alt='' src={closeIcon} />
 							</button>
 						</div>
@@ -166,13 +205,16 @@ export const Board = () => {
 				values={columns}
 				onReorder={setColumns}
 				className={styles.columnsContainer}
-				axis='x'>
-				{columns?.map((el) => (
+				axis={canDragColumn ? 'x' : 'y'}
+			>
+				{calumns?.map((el) => (
 					<Reorder.Item
 						key={el.order}
 						value={el}
-						onDragEnd={() => updateColumnOrder(el)}>
+						onDragEnd={() => updateColumnOrder(el)}
+					>
 						<Column
+							dragColumnEvent={changeDrag }
 							tasks={el.tasks}
 							columnId={el.id}
 							columnName={el.name}
