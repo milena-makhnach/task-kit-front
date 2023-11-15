@@ -13,10 +13,17 @@ import {
 import { api } from '@/shared/api/base-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import closeIcon from '../../../assets/icons/close.svg';
+import { Board as BoardType } from '@/shared/types/board';
 
 const getAllColumns = async ({ queryKey }: { queryKey: any }) => {
 	const [_, { board_id }] = queryKey;
 	const { data } = await api.get(`/board/${board_id}/columns`);
+	return data;
+};
+
+const getBoard = async ({ queryKey }: { queryKey: any }) => {
+	const [_, { board_id }] = queryKey;
+	const { data } = await api.get(`/board/${board_id}/`);
 	return data;
 };
 
@@ -44,10 +51,16 @@ export const Board = () => {
 	const [isColumnCreateoOpen, setIsColumnCreatorOpen] = useState(false);
 	const [columnName, setColumnName] = useState<string>('');
 	const [columns, setColumns] = useState<ColumnType[]>([]);
+	const [boardData, setBoardData] = useState<BoardType | null>(null);
 
 	const { data, isSuccess } = useQuery({
 		queryFn: getAllColumns,
 		queryKey: ['columns', { board_id }],
+	});
+
+	const { data: fetchedBoard, isSuccess: isBoardFetched } = useQuery({
+		queryFn: getBoard,
+		queryKey: ['board', { board_id }],
 	});
 
 	const { mutate } = useMutation({
@@ -123,6 +136,12 @@ export const Board = () => {
 			setColumns(data);
 		}
 	}, [isSuccess, data]);
+
+	useEffect(() => {
+		if (isBoardFetched) {
+			setBoardData(fetchedBoard);
+		}
+	}, [isBoardFetched, fetchedBoard]);
 
 	return (
 		<Box className={styles.board}>

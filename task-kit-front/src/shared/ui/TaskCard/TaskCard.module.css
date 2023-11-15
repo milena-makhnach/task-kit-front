@@ -40,18 +40,7 @@
 .taskSubscribe {
 	width: fit-content;
 }
-.close {
-	position: absolute;
-	right: 3%;
-	top: 3%;
 
-	line-height: 90%;
-	font-size: 24px;
-
-	border: transparent;
-	outline: transparent;
-	background-color: transparent;
-}
 .textEditor {
 	height: 200px;
 }
@@ -68,41 +57,39 @@
 	border-radius: 6px;
 	border: transparent;
 	outline: transparent;
-
 }
 .btnWrapper {
-    display: flex;
-    width: 100%;
-    margin-top: 60px;
-    gap: 12px;
+	display: flex;
+	width: 100%;
+	margin-top: 60px;
+	gap: 12px;
 }
 .btnWrapper button {
 	background-color: transparent;
 	outline: transparent;
-    border: transparent;
+	border: transparent;
 	background-color: transparent;
 	border-radius: 4px;
 	padding: 8px 6px;
-    font-size: 16px;
-    width: fit-content;
+	font-size: 16px;
+	width: fit-content;
 }
 .btnWrapper button:nth-child(1) {
 	background-color: #0e67e6;
-    color: #ffffff;
+	color: #ffffff;
 }
 .btnWrapper button:nth-child(2) {
-
 }
 .btnWrapper button:nth-child(3) {
 	background-color: #e6e6e8;
-    margin-left: auto;
+	margin-left: auto;
 }
 .commentWrapper {
-    display: flex;
-    gap: 12px;
-    align-items: center;
+	display: flex;
+	gap: 12px;
+	align-items: center;
 }
 .commentWrapper img {
-    width: 30px;
-    height: 30px;
+	width: 30px;
+	height: 30px;
 }

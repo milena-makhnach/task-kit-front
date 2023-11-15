@@ -12,6 +12,7 @@ import attachIcon from '../../../assets/icons/attach.svg';
 import coverIcon from '../../../assets/icons/window.svg';
 import boardIcon from '../../../assets/icons/tab.svg';
 import removeIcon from '../../../assets/icons/delete.svg';
+import CloseIcon from '@mui/icons-material/Close';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -20,9 +21,10 @@ import { LabelPopover } from '../LabelPopover/LabelPopover';
 import { MembersPopover } from '../MembersPopover/MembersPopover';
 import { FilePopover } from '../FilePopover/FilePopover';
 import { DatePopover } from '../DatePopover/DatePopover';
-import { TaskResponse } from '@/shared/types/task';
 import { api } from '@/shared/api/base-query';
 import { useQuery } from '@tanstack/react-query';
+import { IconButton } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 type TaskCardType = {
 	closeTask: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,19 +34,17 @@ type TaskCardType = {
 
 const taskSideBarItems = [
 	{ id: 1, img: userIcon, text: 'Участники', item: <MembersPopover /> },
-	{ id: 2, img: labelIcon, text: 'Метки', item: <LabelPopover /> },
-	{ id: 3, img: checkIcon, text: 'Чек-лист', item: <LabelPopover /> },
-	{ id: 4, img: timeIcon, text: 'Даты', item: <DatePopover /> },
-	{ id: 5, img: attachIcon, text: 'Вложение', item: <FilePopover /> },
-	{ id: 6, img: coverIcon, text: 'Обложка', item: <LabelPopover /> },
-	{ id: 7, img: boardIcon, text: 'Поля', item: <LabelPopover /> },
-	{ id: 8, img: removeIcon, text: 'Удалить', item: <LabelPopover /> },
+	// { id: 2, img: labelIcon, text: 'Метки', item: <LabelPopover /> },
+	{ id: 2, img: timeIcon, text: 'Даты', item: <DatePopover /> },
+	{ id: 3, img: attachIcon, text: 'Вложение', item: <FilePopover /> },
+	{ id: 4, img: coverIcon, text: 'Обложка', item: <LabelPopover /> },
+	{ id: 5, img: removeIcon, text: 'Удалить', item: <LabelPopover /> },
 ];
 
 const getTask = async ({ queryKey }: { queryKey: any }) => {
-	const [_, { task_id }] = queryKey;
+	const [_, { task_id, board_id }] = queryKey;
 
-	const { data } = await api.get(`/task/${task_id}`);
+	const { data } = await api.get(`/board/${board_id}/task/${task_id}`);
 
 	return data;
 };
@@ -54,33 +54,32 @@ export const TaskCard: FC<TaskCardType> = ({
 	columnName,
 	taskId,
 }) => {
+	const { id } = useParams();
+
 	const [value, setValue] = useState('');
 
 	const { data } = useQuery({
 		queryFn: getTask,
-		queryKey: ['task', { task_id: taskId }],
+		queryKey: ['task', { task_id: taskId, board_id: id }],
 	});
-
-	console.log(data);
 
 	return (
 		<Box className={styles.taskWrapper}>
 			<Box className={styles.task}>
-				<button
-					className={styles.close}
-					onClick={() => closeTask(false)}>
-					x
-				</button>
+				<IconButton
+					onClick={() => closeTask(false)}
+					sx={{
+						position: 'absolute',
+						right: '3%',
+						top: '3%',
+					}}>
+					<CloseIcon />
+				</IconButton>
 				<Box className={styles.leftSide}>
 					<Box className={styles.taskHeader}>
 						<Box className={styles.taskname}>
 							<p className={styles.title}>{data?.name}</p>
 							<p>в колонке: {columnName}</p>
-						</Box>
-						<Box className={styles.taskSubscribe}>
-							<p>уведомления</p>
-
-							<Chip text='Подписаться' img={eyeIcon} />
 						</Box>
 					</Box>
 					<Box className={styles.descript}>
@@ -94,7 +93,6 @@ export const TaskCard: FC<TaskCardType> = ({
 						<Box className={styles.btnWrapper}>
 							<button>Сохранить</button>
 							<button>Отмена</button>
-							<button>Помощь по ворматированию</button>
 						</Box>
 					</Box>
 					<Box className={styles.comment}>
@@ -106,7 +104,7 @@ export const TaskCard: FC<TaskCardType> = ({
 					</Box>
 				</Box>
 				<Box className={styles.rightSide}>
-					<p>Добавьте карточку</p>
+					<p>Добавить на карточку</p>
 					{taskSideBarItems.map((el) => (
 						<LabelPopoverButton
 							key={el.id}

@@ -14,8 +14,10 @@ import './index.css';
 
 const router = createBrowserRouter(routerConfig);
 
+//@ts-nocheck
+//@ts-ignore
 const theme = createTheme({
-	// ...baseTheme,
+	...baseTheme,
 	palette: { primary: { ...themePalette.grayPalette } },
 });
 
@@ -24,6 +26,7 @@ export const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
 );
+
 root.render(
 	<React.StrictMode>
 		<ThemeProvider theme={theme}>

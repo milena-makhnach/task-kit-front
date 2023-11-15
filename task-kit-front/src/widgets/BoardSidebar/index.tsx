@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import {
 	ListItem,
 	ListItemButton,
@@ -17,6 +17,9 @@ import { api } from '@/shared/api/base-query';
 import { BoardResponse } from '@/shared/types/board';
 import { useQuery } from '@tanstack/react-query';
 import userAvatar from '../../assets/icons/user.svg';
+
+import styles from './BoardSideBar.module.css';
+
 const openedMixin = (theme: Theme): CSSObject => ({
 	width: 240,
 	transition: theme.transitions.create('width', {
@@ -85,8 +88,7 @@ export const BoardSidebar: FC = () => {
 		<Drawer
 			variant='permanent'
 			open={open}
-			sx={{ transform: 'translateY(1px)' }}
-		>
+			sx={{ transform: 'translateY(1px)' }}>
 			<DrawerHeader>
 				<IconButton onClick={toggleDrawer}>
 					{open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -101,10 +103,14 @@ export const BoardSidebar: FC = () => {
 					justifyContent: 'start',
 					alignItems: 'center',
 					gap: '4px',
-				}}
-			>
+				}}>
 				<img
-					style={{ width: '30px', height: '30px', marginInline: open ? '0px' : '16px', transition: 'all .3s linear' }}
+					style={{
+						width: '30px',
+						height: '30px',
+						marginInline: open ? '0px' : '16px',
+						transition: 'all .3s linear',
+					}}
 					alt=''
 					src={userAvatar}
 				/>
@@ -119,17 +125,23 @@ export const BoardSidebar: FC = () => {
 								minHeight: 48,
 								justifyContent: open ? 'initial' : 'center',
 								px: 2.5,
-							}}
-						>
-							<Link to={`/board/${board.id}`}>
+							}}>
+							<Link
+								to={`/board/${board.id}`}
+								className={styles.sidebarItem}>
 								<Box
 									sx={{
 										backgroundImage: `url(${
 											board.photo ? board.photo.file : ''
 										})`,
-										background: board.bg_color ? board.bg_color : '',
+										background: board.bg_color
+											? board.bg_color
+											: '',
 										width: '20px',
 										height: '20px',
+										flexShrink: 0,
+										backgroundSize: 'cover',
+										backgroundRepeat: 'no-repeat',
 									}}
 								/>
 								<ListItemText>{board.name}</ListItemText>

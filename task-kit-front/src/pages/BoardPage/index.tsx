@@ -11,8 +11,8 @@ export const BoardPage: FC = () => {
 		<Box className={styles.board}>
 			<BoardSidebar />
 			<Box className={styles.boardContent}>
-					{/* <Box className={styles.boardWrapper}></Box> */}
-					<Board />
+				{/* <Box className={styles.boardWrapper}></Box> */}
+				<Board />
 			</Box>
 		</Box>
 	);

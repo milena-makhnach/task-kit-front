@@ -24,7 +24,7 @@ export const baseTheme = {
 			styleOverrides: {
 				paper: {
 					position: 'relative',
-					// boxShadow: '1px 0px 0px 0px hsla(0,0%,100%,0.16)',
+					boxShadow: '1px 0px 0px 0px hsla(0,0%,100%,0.16)',
 					height: '100%',
 					minHeight: '100%',
 					zIndex: 5,
