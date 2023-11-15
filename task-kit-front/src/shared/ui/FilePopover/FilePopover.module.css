@@ -19,3 +19,13 @@
 .container p:nth-child(3) {
 	font-weight: 200;
 }
+.fileInput {
+	background-color: #F1F2F4;
+	color: #576371;
+
+	display: flex;
+	justify-content: center;
+
+	border-radius: 8px;
+	padding: 12px;
+}

@@ -23,7 +23,7 @@ export const Header: FC = () => {
 			sx={{ backgroundColor: theme.palette.primary.main }}
 			className={styles.header}>
 			<Logo />
-			{isAuth && (
+
 				<IconButton
 					id='avatar'
 					onClick={(e) => setanchorEl(e.currentTarget)}>
@@ -34,7 +34,7 @@ export const Header: FC = () => {
 						style={{ width: '2rem', height: '2rem' }}
 					/>
 				</IconButton>
-			)}
+		
 			<UserMenu anchorEl={anchorEl} setAnchorEl={setanchorEl} />
 		</Box>
 	);

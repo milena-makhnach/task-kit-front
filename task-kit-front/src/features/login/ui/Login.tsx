@@ -118,7 +118,7 @@ export const Login: FC = () => {
 						textAlign='center'>
 						Еще нет аккаунта?
 					</Typography>
-					<Link to={'/signup'} className={styles.signupLink}>
+					<Link to={'/sign-up'} className={styles.signupLink}>
 						Зарегистрироваться
 					</Link>
 				</Box>
