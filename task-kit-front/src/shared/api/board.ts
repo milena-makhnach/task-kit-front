@@ -1,38 +1,45 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-
-import { baseQuery } from '@/shared/api/base-query';
 import { CreateBoard, BoardResponse } from '../types/board';
+import { ApiErrorResponse } from '../types/api-error-response';
+import { api } from './base-query';
+import { isAxiosError } from 'axios';
+import { QueryFunctionContext } from '@tanstack/react-query';
 
-export const board = createApi({
-	reducerPath: 'board',
-	baseQuery,
-	tagTypes: ['board'],
-	refetchOnReconnect: true,
-	endpoints: (builder) => ({
-		createBoard: builder.mutation<BoardResponse, CreateBoard>({
-			query: (body) => ({
-				url: '/board',
-				method: 'POST',
-				body,
-			}),
-			invalidatesTags: (result, error, arg) => [
-				{ type: 'board', id: result?.id },
-			],
-		}),
-		getAllBoards: builder.query<BoardResponse[], void>({
-			query: () => '/board',
-			providesTags: (result, error, arg) =>
-				result
-					? [
-							...result.map(({ id }) => ({
-								type: 'board' as const,
-								id,
-							})),
-							'board',
-					  ]
-					: ['board'],
-		}),
-	}),
-});
+export const createBoard = async (
+	boardData: CreateBoard
+): Promise<ApiErrorResponse | BoardResponse> => {
+	try {
+		const { data } = await api.post<BoardResponse>(`/board/`, boardData);
 
-export const { useCreateBoardMutation, useGetAllBoardsQuery } = board;
+		return data;
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};
+
+export const getBoard = async (
+	context: QueryFunctionContext<[string, { board_id: string }]>
+): Promise<ApiErrorResponse | BoardResponse> => {
+	const board_id = context.queryKey[1].board_id;
+	const { data } = await api.get<BoardResponse>(`/board/${board_id}/`);
+	return data;
+};
+
+export const getAllBoards = async (): Promise<
+	ApiErrorResponse | BoardResponse[]
+> => {
+	try {
+		const { data } = await api.get<BoardResponse[]>(`/board/`);
+
+		return data;
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};

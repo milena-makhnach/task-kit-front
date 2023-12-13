@@ -1,45 +1,63 @@
 import styles from './FilePopover.module.css';
 import Box from '@mui/material/Box/Box';
-import { Button, Input, InputAdornment } from '@mui/material';
+import { Button, Input, InputAdornment, Typography } from '@mui/material';
 import { MuiFileInput } from 'mui-file-input';
 import { useState, useCallback, ChangeEvent } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { api } from '@/shared/api/base-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import { uploadFile } from '@/shared/api/task';
 
 export const FilePopover = () => {
+	const { task_id, board_id } = useParams();
+	const queryClient = useQueryClient();
+
 	const [value, setValue] = useState<File | null>(null);
 
-	const onDrop = useCallback((acceptedFiles: Array<File>) => {
-			console.log(acceptedFiles[0])
-		setValue(acceptedFiles[0])
-	  }, [])
-	  
-	const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
+	const { mutate } = useMutation({
+		mutationFn: uploadFile,
+		mutationKey: ['file'],
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['task', { task_id, board_id }],
+			});
+		},
+	});
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { files } = event.target;
 
 		files && setValue(files[0]);
+
+		if (files) {
+			const formData = new FormData();
+
+			formData.append('file', files[0]);
+			formData.append('task_id', String(task_id));
+			mutate(formData);
+		}
 	};
 
-	console.log(value)
 	return (
 		<Box className={styles.container}>
-			<p>Прикрепить</p>
-			<p>Прикрепите файл с компьютера</p>
-			<p>
-				Вы можете просто перетянуть и отпустить файлы с компьютера, что бы
-				выгрузить их.
-			</p>
+			<Typography>Прикрепить</Typography>
+			<Typography>Прикрепите файл с компьютера</Typography>
+			<Typography>
+				Вы можете просто перетянуть и отпустить файлы с компьютера, что
+				бы выгрузить их.
+			</Typography>
 
-			<input style={{ display: 'none' }}  />
-			
-			<label className={styles.fileInput} htmlFor='file' {...getRootProps()}>
-				<input type='file' id='file' {...getInputProps()} onClick={e => handleChange} />
-				{isDragActive ? (
-					<p>Перенесите файл сюда</p>
-				) : (
-					<p>{value ? 'Файл успешно добавлен' : 'Выбрать файл'}</p>
-				)}
+			<input style={{ display: 'none' }} />
+
+			<label className={styles.fileInput} htmlFor='file'>
+				<input
+					type='file'
+					id='file'
+					style={{ display: 'none' }}
+					onChange={handleChange}
+				/>
+
+				<p>{value ? 'Файл успешно добавлен' : 'Выбрать файл'}</p>
 			</label>
 		</Box>
 	);

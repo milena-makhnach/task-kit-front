@@ -1,45 +1,69 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-
-import { baseQuery } from '@/shared/api/base-query';
 import { Column, ColumnResponse } from '../types/column';
+import { ApiErrorResponse } from '../types/api-error-response';
+import { api } from './base-query';
+import { isAxiosError } from 'axios';
+import { QueryFunctionContext } from '@tanstack/react-query';
 
 type CreateColumn = Column & {
 	board_id: string;
 };
 
-export const column = createApi({
-	reducerPath: 'column',
-	baseQuery,
-	tagTypes: ['column'],
-	endpoints: (builder) => ({
-		createColumn: builder.mutation<ColumnResponse, CreateColumn>({
-			query: ({ board_id, ...body }) => ({
-				url: `/board/${board_id}/columns`,
-				method: 'POST',
-				body,
-			}),
-			invalidatesTags: ['column'],
-		}),
-		getAllColumns: builder.query<ColumnResponse[], string>({
-			query: (board_id) => `/board/${board_id}/columns`,
-			providesTags: ['column'],
-		}),
-		updateColumn: builder.mutation<
-			ColumnResponse,
-			Partial<ColumnResponse> & { board_id: string }
-		>({
-			query: ({ board_id, id, ...body }) => ({
-				url: `/board/${board_id}/columns/${id}`,
-				method: 'PUT',
-				body,
-			}),
-			invalidatesTags: ['column'],
-		}),
-	}),
-});
+export const createColumn = async (
+	columnData: CreateColumn
+): Promise<ApiErrorResponse | ColumnResponse> => {
+	const { board_id, ...body } = columnData;
+	try {
+		const { data } = await api.post<ColumnResponse>(
+			`/board/${board_id}/columns`,
+			body
+		);
 
-export const {
-	useCreateColumnMutation,
-	useUpdateColumnMutation,
-	useGetAllColumnsQuery,
-} = column;
+		return data;
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};
+
+export const getAllColumns = async (
+	context: QueryFunctionContext<[string, { board_id: string }]>
+): Promise<ApiErrorResponse | ColumnResponse[]> => {
+	try {
+		const board_id = context.queryKey[1].board_id;
+
+		const { data } = await api.get<ColumnResponse[]>(
+			`/board/${board_id}/columns`
+		);
+
+		return data;
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};
+
+export const updateColumn = async (
+	columnData: Partial<ColumnResponse> & { board_id: string }
+): Promise<ApiErrorResponse | ColumnResponse> => {
+	const { board_id, id, ...body } = columnData;
+	try {
+		const { data } = await api.put<ColumnResponse>(
+			`/board/${board_id}/columns/${id}`,
+			body
+		);
+
+		return data;
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};

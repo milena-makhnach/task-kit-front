@@ -10,6 +10,9 @@ export const baseTheme = {
 				root: {
 					height: '50px',
 				},
+				input: {
+					padding: '12px !important',
+				},
 			},
 		},
 		MuiFormLabel: {
@@ -23,12 +26,22 @@ export const baseTheme = {
 		MuiDrawer: {
 			styleOverrides: {
 				paper: {
-					position: 'relative',
 					boxShadow: '1px 0px 0px 0px hsla(0,0%,100%,0.16)',
 					height: '100%',
 					minHeight: '100%',
 					zIndex: 5,
 					display: 'flex',
+				},
+			},
+		},
+		MuiFormHelperText: {
+			styleOverrides: {
+				root: {
+					fontSize: '10px',
+					fontWeight: 600,
+					paddingInline: '5px',
+					lineHeight: '80%',
+					marginTop: '7px',
 				},
 			},
 		},

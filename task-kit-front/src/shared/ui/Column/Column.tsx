@@ -1,4 +1,5 @@
 import { FC, useState, useEffect } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { Reorder } from 'framer-motion';
 import styles from './Column.module.css';
 import Box from '@mui/material/Box/Box';
@@ -6,19 +7,18 @@ import { TaskCard } from '../TaskCard/TaskCard';
 import { TaskResponse } from '@/shared/types/task';
 import { api } from '@/shared/api/base-query';
 import { useMutation } from '@tanstack/react-query';
+import { IconButton } from '@mui/material';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
+
+import CloseIcon from '@mui/icons-material/Close';
+import { updateTask } from '@/shared/api/task';
+import { updateColumn } from '@/shared/api/column';
 
 type ColumnType = {
 	columnId: number;
 	tasks: TaskResponse[];
 	columnName: string;
 	handleCreateTask: (columnId: number, taskName: string) => void;
-	dragColumnEvent: (value: boolean) => void,
-};
-
-const updateTask = async (body: any) => {
-	const { id, ...rest } = body;
-	const { data } = await api.put(`/task/${id}`, rest);
-	return data;
 };
 
 export const Column: FC<ColumnType> = ({
@@ -26,8 +26,12 @@ export const Column: FC<ColumnType> = ({
 	tasks,
 	columnName,
 	handleCreateTask,
-	dragColumnEvent,
+	...rest
 }) => {
+	const { board_id } = useParams();
+	const location = useLocation();
+
+	const [colName, setColName] = useState<string>(columnName || '');
 	const [isTaskCreatorOpen, setIsTaskCreatorOpen] = useState(false);
 	const [isTaskOpen, setIsTaskOpen] = useState(false);
 	const [taskName, setTaskName] = useState<string>('');
@@ -40,19 +44,38 @@ export const Column: FC<ColumnType> = ({
 		mutationKey: ['task'],
 	});
 
+	const { mutate: mutateColumn } = useMutation({
+		mutationFn: updateColumn,
+		mutationKey: ['column'],
+	});
+
 	const buttonHandler = () => {
-		if (!taskName) {
-			setIsTaskCreatorOpen(false);
-			return;
-		}
+		// if (!taskName) {
+		// 	setIsTaskCreatorOpen(false);
+		// 	return;
+		// }
+
+		setIsTaskCreatorOpen(false);
 
 		handleCreateTask(columnId, taskName);
 		setTaskName('');
 	};
 
+	const handleUpdateColumn = () => {
+		if (colName) {
+			mutateColumn({
+				id: columnId,
+				board_id: board_id as string,
+				name: colName,
+			});
+		} else {
+			setColName(columnName);
+		}
+	};
+
 	const handleUpdateTask = (task: TaskResponse) => {
 		const taskToUpdate = tasksList.findIndex((item) => item.id === task.id);
-		mutate({ order: taskToUpdate + 1, id: task.id });
+		mutate({ order: taskToUpdate + 1, id: `${task.id}` });
 	};
 
 	const handleCloseModal = () => {
@@ -62,37 +85,55 @@ export const Column: FC<ColumnType> = ({
 
 	useEffect(() => {
 		setTaskList(tasks);
-	}, []);
+	}, [tasks]);
 
+	useEffect(() => {
+		setColName(columnName);
+	}, [columnName]);
 
 	return (
-		<Box className={styles.column}>
-			<p>{columnName}</p>
+		<Box
+			className={styles.column}
+			//@ts-ignore
+			{...rest.droppableProps}
+			//@ts-ignore
+			ref={rest.innerRef}>
+			<input
+				className={styles.input}
+				placeholder='Заголовок колонки'
+				value={colName}
+				onChange={(e) => setColName(e.target.value)}
+				onBlur={handleUpdateColumn}
+			/>
 
-			<Reorder.Group
-				values={tasksList}
-				onReorder={setTaskList}
-				className={styles.tasks}>
-				{tasksList.map((el) => (
-					<Reorder.Item
-						value={el}
-						key={el.id}
-						onMouseDown={() => dragColumnEvent(false)}
-						onMouseUp={() =>  dragColumnEvent(true)}
-						onDragEnd={() => handleUpdateTask(el)}
-						className={styles.taskLi}>
-						<button
-							className={styles.task}
-							onClick={(e) => {
-								setIsTaskOpen(true);
-								setSelectedTaskId(el.id);
-							}}>
-							{el.name}
-						</button>
-					</Reorder.Item>
+			<div className={styles.tasks}>
+				{tasksList?.map((el, index) => (
+					<Draggable
+						draggableId={String(el.id)}
+						index={index}
+						key={el.id}>
+						{(prov) => (
+							<Link
+								to={`/board/${board_id}/task/${el.id}`}
+								state={{ background: location }}
+								className={styles.taskLi}
+								{...prov.draggableProps}
+								{...prov.dragHandleProps}
+								ref={prov.innerRef}>
+								<button
+									className={styles.task}
+									onClick={(e) => {
+										setIsTaskOpen(true);
+										setSelectedTaskId(el.id);
+									}}>
+									{el.name}
+								</button>
+							</Link>
+						)}
+					</Draggable>
 				))}
-			</Reorder.Group>
-
+				{/* {provided.placeholder} */}
+			</div>
 			{isTaskOpen && selectedTaskId && (
 				<TaskCard
 					closeTask={handleCloseModal}
@@ -113,20 +154,25 @@ export const Column: FC<ColumnType> = ({
 							className={styles.taskInput}
 							value={taskName}
 							onChange={(e) => setTaskName(e.target.value)}
-							placeholder='Ввести заголовок для этой карточки'
+							placeholder='Заголовок карточки'
 						/>
-						<div>
+						<Box className={styles.buttonsContainer}>
 							<button
 								className={styles.taskCreator}
 								onClick={buttonHandler}>
 								Добавить карточку
 							</button>
-							<button
-								className={styles.close}
+							<IconButton
+								sx={{ width: '30px', height: '30px' }}
 								onClick={() => setIsTaskCreatorOpen(false)}>
-								x
-							</button>
-						</div>
+								<CloseIcon
+									sx={{
+										width: '20px',
+										height: '20px',
+									}}
+								/>
+							</IconButton>
+						</Box>
 					</>
 				) : (
 					'+ добавить карточку'

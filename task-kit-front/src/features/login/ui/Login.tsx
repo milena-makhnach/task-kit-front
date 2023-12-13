@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/shared/ui/index';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
@@ -10,102 +10,112 @@ import { LoginFormValues } from '@/shared/types/login-form-values';
 import { formDefaultValues } from '../model/form-default-values';
 import { loginalidatorShema } from '../validators/login-validator';
 import { useAppDispatch } from '@/shared/store/store';
-import { useLoginMutation } from '@/shared/api/auth';
-import { showQueryError } from '@/shared/utils/show-query-error';
 
 import styles from './login.module.css';
+import { useMutation } from '@tanstack/react-query';
+import { login } from '@/shared/api/auth';
+import { isApiError } from '@/shared/type-guards/query-error-guard';
+import { FORM_INPUTS } from '../model/form-inputs';
 
 export const Login: FC = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const [login, { data, isError, isLoading, isSuccess, error }] =
-		useLoginMutation();
+	const [error, setError] = useState<string | null>(null);
+
+	const {
+		mutate,
+		data: user,
+		isSuccess,
+		isPending,
+	} = useMutation({
+		mutationFn: login,
+		mutationKey: ['signup'],
+	});
 
 	const {
 		control,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isValid, isDirty, isSubmitting, isSubmitted },
 	} = useForm<LoginFormValues>({
 		defaultValues: formDefaultValues,
+		mode: 'onTouched',
 		resolver: yupResolver(loginalidatorShema),
 	});
 
 	const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
-		login(data);
+		mutate(data);
 	};
 
 	useEffect(() => {
-		if (isSuccess && data) {
-			const { first_name, last_name, ...restData } = data;
-			dispatch(
-				setUserData({
-					...restData,
-					firstname: first_name,
-					lastname: last_name,
-				})
-			);
-			navigate('/home');
+		if (isSuccess && user) {
+			if (!isApiError(user)) {
+				const { first_name, last_name, ...restData } = user;
+				dispatch(
+					setUserData({
+						...restData,
+						firstname: first_name,
+						lastname: last_name,
+					})
+				);
+				navigate('/');
+				setError(null);
+				return;
+			}
+
+			setError(user.message);
 		}
-	}, [data, isSuccess, navigate, dispatch]);
+	}, [user, isSuccess, navigate, dispatch]);
 
 	return (
 		<Box className={styles.login}>
 			<Paper className={styles.loginContent} elevation={3}>
 				<Typography
 					component='p'
-					variant='h5'
-					mb={4}
+					variant='h6'
+					mb={2}
 					sx={{ fontWeight: 600, textAlign: 'center' }}>
 					Войти
 				</Typography>
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
 					<Box className={styles.loginInputs}>
-						<Controller
-							name='email'
-							control={control}
-							render={({ field }) => (
-								<Input
-									{...field}
-									placeholder='Email'
-									label='Email'
-									type='email'
-									error={!!errors['email']}
-									errorText={errors['email']?.message}
-								/>
-							)}
-						/>
-						<Controller
-							name='password'
-							control={control}
-							render={({ field }) => (
-								<Input
-									{...field}
-									placeholder='Пароль'
-									label='Пароль'
-									type='password'
-									error={!!errors['password']}
-									errorText={errors['password']?.message}
-								/>
-							)}
-						/>
+						{FORM_INPUTS.map((item) => (
+							<Controller
+								name={item.name}
+								control={control}
+								render={({ field }) => (
+									<Input
+										{...item}
+										{...field}
+										placeholder={item.placeholder}
+										label={item.label}
+										type={item.type}
+										error={!!errors[item.name]}
+										errorText={errors[item.name]?.message}
+									/>
+								)}
+							/>
+						))}
 					</Box>
-					{isError && error && (
-						<FormHelperText
-							error={isError}
-							sx={{ fontWeight: 600 }}>
-							{showQueryError(error)}
-						</FormHelperText>
-					)}
+
+					<FormHelperText error={!!error}>
+						{error ? error : ' '}
+					</FormHelperText>
+
 					<Button
 						variant='contained'
 						sx={{
-							marginBlock: '20px',
+							marginBlock: '10px',
 							fontWeight: 600,
 							height: '50px',
 						}}
 						type='submit'
-						disabled={!!Object.keys(errors).length || isLoading}
+						disabled={
+							(isDirty && !isValid) ||
+							isSubmitting ||
+							isPending ||
+							(!isValid && isSubmitted)
+						}
 						fullWidth>
 						Войти
 					</Button>

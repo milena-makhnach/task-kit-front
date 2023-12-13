@@ -1,6 +1,6 @@
 a {
 	flex: 1;
-	max-width: 25%;
+	flex-shrink: 0;
 }
 
 .card {
@@ -10,6 +10,7 @@ a {
 	background-position: center center;
 	background-size: cover;
 	border-radius: 3px;
+	flex-shrink: 0;
 }
 
 .cardContent {

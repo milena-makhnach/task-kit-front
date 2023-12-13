@@ -1,20 +1,21 @@
+.login {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: calc(100% - 45px);
+}
+
 .loginContent {
 	max-width: 500px;
 	min-width: 300px;
 	width: 100%;
 	padding: 20px;
-	margin: auto;
-	transform: translateY(40%);
-	-webkit-transform: translateY(40%);
-	-moz-transform: translateY(40%);
-	-ms-transform: translateY(40%);
-	-o-transform: translateY(40%);
 }
 
 .loginInputs {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 15px;
 }
 
 .signupLink {

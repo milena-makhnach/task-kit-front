@@ -1,7 +1,7 @@
 import { UserAvatar } from '@/entities/user/ui/UserAvatar';
-import { ListItem, ListItemText } from '@mui/material';
+import { ListItem, ListItemText, ListItemButton } from '@mui/material';
 import { FC } from 'react';
-// import DoneIcon from '@material-ui/icons';
+import DoneIcon from '@mui/icons-material/Done';
 
 type MembersPopoverItemProps = {
 	name: string;
@@ -11,18 +11,26 @@ type MembersPopoverItemProps = {
 };
 
 export const MembersPopoverItem: FC<MembersPopoverItemProps> = ({
-	name = 'milena',
-	lastname = 'makhnach',
-	avatar = '',
+	name,
+	lastname,
+	avatar,
 	isSelected = true,
 }) => {
 	return (
-		<ListItem>
-			<UserAvatar firstname={name} lastname={lastname} avatar={avatar} />
-			<ListItemText>
-				{name} {lastname}
-			</ListItemText>
-			{/* {isSelected && <DoneIcon />} */}
+		<ListItem disablePadding>
+			<ListItemButton
+				selected={isSelected}
+				sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+				<UserAvatar
+					firstname={name}
+					lastname={lastname}
+					avatar={avatar || ''}
+				/>
+				<ListItemText sx={{ textTransform: 'capitalize' }}>
+					{name} {lastname}
+				</ListItemText>
+				{isSelected && <DoneIcon />}
+			</ListItemButton>
 		</ListItem>
 	);
 };

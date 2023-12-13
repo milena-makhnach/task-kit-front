@@ -1,26 +1,34 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-
-import { baseQuery } from '@/shared/api/base-query';
+import { api } from '@/shared/api/base-query';
 import { TaskPhoto } from '../types/task-types';
+import { ApiErrorResponse } from '../types/api-error-response';
+import { isAxiosError } from 'axios';
 
-export const photos = createApi({
-	reducerPath: 'photos',
-	baseQuery,
-	tagTypes: ['getPhotos', 'postPhoto'],
-	endpoints: (builder) => ({
-		getPhotos: builder.query<TaskPhoto[], void>({
-			query: () => '/photo',
-			providesTags: ['getPhotos'],
-		}),
-		postPhoto: builder.mutation<TaskPhoto, TaskPhoto>({
-			query: (body) => ({
-				url: '/photo',
-				method: 'POST',
-				body,
-			}),
-			invalidatesTags: ['postPhoto'],
-		}),
-	}),
-});
+export const getPhotos = async (): Promise<ApiErrorResponse | TaskPhoto[]> => {
+	try {
+		const { data } = await api.get<TaskPhoto[]>(`/photo/`);
 
-export const { useGetPhotosQuery, usePostPhotoMutation } = photos;
+		return data;
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};
+
+export const postPhoto = async (
+	photo: TaskPhoto
+): Promise<ApiErrorResponse | TaskPhoto> => {
+	try {
+		const { data } = await api.post<TaskPhoto>(`/photo/`, photo);
+
+		return data;
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};

@@ -11,13 +11,15 @@
 }
 
 .cardsWrapper {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
 	gap: 20px;
 }
 
 .contentHeader {
 	display: flex;
+	align-items: center;
 	gap: 14px;
 	margin-block: 14px;
+	text-transform: capitalize;
 }

@@ -1,8 +1,5 @@
-import { SerializedError } from '@reduxjs/toolkit';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { ApiErrorResponse } from '../types/api-error-response';
 
-export const isFetchBaseQueryDataWithMessage = (
-	error: FetchBaseQueryError | SerializedError
-): error is FetchBaseQueryError => {
-	return 'data' in error;
+export const isApiError = (error: unknown): error is ApiErrorResponse => {
+	return error !== null && typeof error === 'object' && 'message' in error;
 };

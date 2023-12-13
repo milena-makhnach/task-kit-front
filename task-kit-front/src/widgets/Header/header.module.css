@@ -5,9 +5,42 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	border-bottom: 1px solid #dcdcdc;
 }
 
 .headerContainer {
 	display: flex;
 	justify-content: space-between;
+}
+
+.invite {
+	background-color: transparent;
+	padding: 5px 10px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-ms-border-radius: 4px;
+	-o-border-radius: 4px;
+	cursor: pointer;
+	border: 1px solid #dcdcdc;
+	font-weight: 500;
+}
+
+.invite:hover {
+	background-color: rgba(0, 0, 0, 0.289);
+}
+
+.submitBtn {
+	background: transparent;
+	border: 1px solid #dcdcdc;
+	padding: 10px;
+	cursor: pointer;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-ms-border-radius: 4px;
+	-o-border-radius: 4px;
+}
+.submitBtn:hover {
+	background-color: rgba(0, 0, 0, 0.289);
 }

@@ -1,96 +1,98 @@
 .page {
-    background: #EDF2F6;
-    min-height: 95vh;
+	background: #edf2f6;
+	min-height: 95vh;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .card {
-    background-color: #fff;
-    border-radius: 18px;
+	background-color: #fff;
+	border-radius: 18px;
 
-    width: 50%;
-    height: fit-content;
-    padding: 24px;
+	width: 50%;
+	height: fit-content;
+	padding: 24px;
 
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 .ava {
-    width: 70px !important;
-    height: 70px !important;
+	width: 70px !important;
+	height: 70px !important;
 }
 
 .userInfoContainer {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+	display: flex;
+	align-items: center;
+	gap: 6px;
 }
 
 .devider {
-    width: 96%;
-    height: 1.3px;
-    margin-inline: auto;
-    margin-block: 40px;
-    background: #E0E4EC;
+	width: 96%;
+	height: 1.3px;
+	margin-inline: auto;
+	margin-block: 40px;
+	background: #e0e4ec;
 }
 .form {
-    width: 100%;
-    margin-top: auto;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    /* grid-template-rows: repeat(3, 30px); */
-    gap: 14px;
+	width: 100%;
+	margin-top: auto;
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	/* grid-template-rows: repeat(3, 30px); */
+	gap: 14px;
 }
 .form div {
-    width: 100%;
+	width: 100%;
 }
 .form div:nth-child(1),
-.form div:nth-child(3){
-    grid-column: 1/4;
- 
+.form div:nth-child(3) {
+	grid-column: 1/4;
 }
 .form div:nth-child(2),
 .form div:nth-child(4) {
-    grid-column: 4/7;
+	grid-column: 4/7;
 }
 
 .form button:nth-child(5) {
-    grid-column: 1/3; 
-    margin-top: 20px;
+	grid-column: 1/3;
+	margin-top: 20px;
 }
 .form button:nth-child(6) {
-    grid-column: 3/4; 
-    margin-top: 20px;
+	grid-column: 3/4;
+	margin-top: 20px;
 }
 .avatarContainer {
-    position: relative;
-    width: fit-content;
-    height: fit-content;
-    overflow: hidden;
-    border-radius: 50%;
-    
+	position: relative;
+	width: fit-content;
+	height: fit-content;
+	overflow: hidden;
+	border-radius: 50%;
 }
 .avatarContainer input {
-    display: none;
+	display: none;
 }
 
 .avatarContainer label {
-    position: absolute;
-    width: 100%;
-    height: 30%;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #8375759f;
-    z-index: 1;
+	position: absolute;
+	width: 100%;
+	height: 30%;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #8375759f;
+	z-index: 1;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .avatarContainer label img {
-    filter: invert(1);
+	filter: invert(1);
+}
+
+.avaLabel {
+	cursor: pointer;
 }

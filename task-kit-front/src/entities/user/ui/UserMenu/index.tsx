@@ -2,12 +2,13 @@ import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Divider, Menu, MenuItem, Typography } from '@mui/material';
 
-import { useLogoutMutation } from '@/shared/api/auth';
 import { logoutUser } from '@/entities/user/slice/user-slice';
 import { UserAvatar } from '@/entities/user/ui/UserAvatar';
 import { RootState, useAppDispatch } from '@/shared/store/store';
 import styles from './user-menu.module.css';
-import { Link, redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { logout } from '@/shared/api/auth';
 
 type userMenuProps = {
 	anchorEl: null | HTMLElement;
@@ -16,8 +17,12 @@ type userMenuProps = {
 
 export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate()
-	const [logout] = useLogoutMutation();
+	const navigate = useNavigate();
+
+	const { mutate } = useMutation({
+		mutationKey: ['logout'],
+		mutationFn: logout,
+	});
 
 	const { firstname, lastname, email, avatar } = useSelector(
 		(state: RootState) => state.user
@@ -28,13 +33,14 @@ export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 	};
 
 	const handleLogout = async () => {
-		await logout();
+		await mutate();
 		dispatch(logoutUser());
 		handleClose();
+		navigate('/login');
 	};
 	const handleToProfile = () => {
 		setAnchorEl(null);
-		navigate('/profile')
+		navigate('/profile');
 	};
 
 	return (
@@ -89,7 +95,7 @@ export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 				onClick={handleToProfile}>
 				Профиль
 			</MenuItem>
-			<MenuItem
+			{/* <MenuItem
 				sx={{
 					padding: '8px 20px',
 					fontSize: '14px',
@@ -104,7 +110,7 @@ export const UserMenu: FC<userMenuProps> = ({ anchorEl, setAnchorEl }) => {
 				}}
 				onClick={handleClose}>
 				Выбор темы
-			</MenuItem>
+			</MenuItem> */}
 			<Divider sx={{ marginBlock: '8px' }} />
 			<MenuItem
 				sx={{

@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
 	ListItem,
 	ListItemButton,
@@ -8,17 +8,18 @@ import {
 	Divider,
 	Box,
 } from '@mui/material';
-import { styled, Theme, CSSObject } from '@mui/material/styles';
+import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Link } from 'react-router-dom';
-import { api } from '@/shared/api/base-query';
-import { BoardResponse } from '@/shared/types/board';
 import { useQuery } from '@tanstack/react-query';
 import userAvatar from '../../assets/icons/user.svg';
 
 import styles from './BoardSideBar.module.css';
+import { getAllBoards } from '@/shared/api/board';
+import { BoardResponse } from '@/shared/types/board';
+import { isApiError } from '@/shared/type-guards/query-error-guard';
 
 const openedMixin = (theme: Theme): CSSObject => ({
 	width: 240,
@@ -66,16 +67,13 @@ const Drawer = styled(MuiDrawer, {
 	}),
 }));
 
-const getAllBoards = async () => {
-	const { data } = await api.get('/board/');
-
-	return data;
-};
-
 export const BoardSidebar: FC = () => {
-	const [open, setOpen] = useState(false);
+	const [boards, setBoards] = useState<BoardResponse[]>([]);
+	const [open, setOpen] = useState(true);
 
-	const { data } = useQuery<BoardResponse[]>({
+	const theme = useTheme();
+
+	const { data } = useQuery({
 		queryKey: ['boards'],
 		queryFn: getAllBoards,
 	});
@@ -84,11 +82,24 @@ export const BoardSidebar: FC = () => {
 		setOpen((prev) => !prev);
 	};
 
+	useEffect(() => {
+		if (data) {
+			if (!isApiError(data)) {
+				setBoards(data);
+			}
+		}
+	}, [data]);
+
 	return (
 		<Drawer
 			variant='permanent'
 			open={open}
-			sx={{ transform: 'translateY(1px)' }}>
+			sx={{
+				transform: 'translateY(1px)',
+				'& > .MuiPaper-root': {
+					backgroundColor: theme.palette.primary.light,
+				},
+			}}>
 			<DrawerHeader>
 				<IconButton onClick={toggleDrawer}>
 					{open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -118,7 +129,7 @@ export const BoardSidebar: FC = () => {
 			</Box>
 			<Divider />
 			<List>
-				{data?.map((board) => (
+				{boards.map((board) => (
 					<ListItem key={board.id} disablePadding>
 						<ListItemButton
 							sx={{

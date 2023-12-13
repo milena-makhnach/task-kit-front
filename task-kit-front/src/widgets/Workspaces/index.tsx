@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Typography, Box } from '@mui/material';
 import {
 	QueryClient,
@@ -9,22 +9,33 @@ import { WorkspaceCard } from './ui/WorkspaceCard';
 
 import styles from './workspaces.module.css';
 import { WorkspaceAddCard } from './ui/WorkspaceAddCard';
-import { useGetAllBoardsQuery } from '@/shared/api/board';
 import { Chip } from '../../shared/ui/Chip/Chip';
 import { CreateBoard, BoardResponse } from '../../shared/types/board';
 import { api } from '@/shared/api/base-query';
-import mockUserImage from '../../assets/icons/user.svg'
-const getAllBoards = async () => {
-	const { data } = await api.get('/board/');
-
-	return data;
-};
+import mockUserImage from '../../assets/icons/user.svg';
+import { UserAvatar } from '@/entities/user/ui/UserAvatar';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/shared/store/store';
+import { getAllBoards } from '@/shared/api/board';
+import { isApiError } from '@/shared/type-guards/query-error-guard';
 
 export const Workspaces: FC = () => {
-	const { data } = useQuery<BoardResponse[]>({
+	const [boards, setBoards] = useState<BoardResponse[]>([]);
+
+	const { data, isSuccess } = useQuery({
 		queryKey: ['boards'],
 		queryFn: getAllBoards,
 	});
+
+	const user = useSelector((state: RootState) => state.user);
+
+	useEffect(() => {
+		if (isSuccess && data) {
+			if (!isApiError(data)) {
+				setBoards(data);
+			}
+		}
+	}, [isSuccess, data]);
 
 	return (
 		<Box>
@@ -36,11 +47,17 @@ export const Workspaces: FC = () => {
 				Ваши рабочие пространства
 			</Typography>
 			<Box className={styles.contentHeader}>
-				<img alt='' src={mockUserImage} />
-				<p>User Name</p>
+				<UserAvatar
+					firstname={user.firstname}
+					avatar={user.avatar}
+					lastname={user.lastname}
+				/>
+				<Typography sx={{ fontWeight: 500 }}>
+					{user.firstname} {user.lastname}
+				</Typography>
 			</Box>
 			<Box className={styles.cardsWrapper}>
-				{data?.map((board) => (
+				{boards?.map((board) => (
 					<WorkspaceCard
 						key={board.id}
 						id={board.id}

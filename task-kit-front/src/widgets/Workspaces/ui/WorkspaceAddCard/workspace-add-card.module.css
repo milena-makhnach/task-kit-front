@@ -1,6 +1,5 @@
 .addCard {
 	position: relative;
-	height: 80px;
 	background-color: #091e420f;
 	padding: 8px;
 	border-radius: 3px;
@@ -8,7 +7,7 @@
 	align-items: center;
 	justify-content: center;
 	flex: 1;
-	max-width: 25%;
+	flex-shrink: 0;
 }
 
 .addCardTitle {

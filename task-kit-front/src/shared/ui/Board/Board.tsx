@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box/Box';
 import { useParams } from 'react-router-dom';
 import { Reorder } from 'framer-motion';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 import { Column } from '../Column/Column';
 
@@ -12,74 +13,13 @@ import {
 } from '@/shared/types/column';
 import { api } from '@/shared/api/base-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import closeIcon from '../../../assets/icons/close.svg';
 import { Board as BoardType } from '@/shared/types/board';
-
-const getAllColumns = async ({ queryKey }: { queryKey: any }) => {
-	const [_, { board_id }] = queryKey;
-	const { data } = await api.get(`/board/${board_id}/columns`);
-	return data;
-};
-
-const getBoard = async ({ queryKey }: { queryKey: any }) => {
-	const [_, { board_id }] = queryKey;
-	const { data } = await api.get(`/board/${board_id}/`);
-	return data;
-};
-
-const createColumn = async (body: any) => {
-	const { board_id, ...rest } = body;
-	const { data } = await api.post(`/board/${board_id}/columns`, rest);
-	return data;
-};
-
-const createTask = async (body: any) => {
-	const { data } = await api.post(`/task/`, body);
-	return data;
-};
-
-const updateColumn = async (body: any) => {
-	const { board_id, id, ...rest } = body;
-	const { data } = await api.put(`/board/${board_id}/columns/${id}`, rest);
-	return data;
-};
-
-const calumns = [
-	{
-		name: 'jopa',
-		order: 1,
-		id: 19,
-		tasks: [
-			{
-				id: 19,
-				name: 'task1',
-				description: null,
-				deadline: null,
-				order: 2,
-				photo: null,
-				user_id: 1,
-				column_id: 2,
-			},
-		],
-	},
-	{
-		name: 'jopa2',
-		order: 2,
-		id: 119,
-		tasks: [
-			{
-				id: 119,
-				name: 'task1123',
-				description: null,
-				deadline: null,
-				order: 3,
-				photo: null,
-				user_id: 1,
-				column_id: 2,
-			},
-		],
-	},
-];
+import { Button, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { createTask } from '@/shared/api/task';
+import { createColumn, getAllColumns, updateColumn } from '@/shared/api/column';
+import { isApiError } from '@/shared/type-guards/query-error-guard';
+import { getBoard } from '@/shared/api/board';
 
 export const Board = () => {
 	const { board_id } = useParams();
@@ -92,12 +32,12 @@ export const Board = () => {
 
 	const { data, isSuccess } = useQuery({
 		queryFn: getAllColumns,
-		queryKey: ['columns', { board_id }],
+		queryKey: ['columns', { board_id: board_id as string }],
 	});
 
 	const { data: fetchedBoard, isSuccess: isBoardFetched } = useQuery({
 		queryFn: getBoard,
-		queryKey: ['board', { board_id }],
+		queryKey: ['board', { board_id: board_id as string }],
 	});
 
 	const { mutate } = useMutation({
@@ -112,7 +52,9 @@ export const Board = () => {
 		mutationFn: createTask,
 		mutationKey: ['tasks'],
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['columns'] });
+			queryClient.invalidateQueries({
+				queryKey: ['columns', { board_id }],
+			});
 		},
 	});
 
@@ -168,81 +110,172 @@ export const Board = () => {
 		});
 	};
 
-	const [canDragColumn, setCanDragColumn] = useState(true)
-
-	const changeDrag = (value: boolean) => {
-		setCanDragColumn(value)
-	}
-
 	useEffect(() => {
 		if (isSuccess) {
-			setColumns(data);
+			if (!isApiError(data)) {
+				setColumns(data);
+			}
 		}
 	}, [isSuccess, data]);
 
 	useEffect(() => {
 		if (isBoardFetched) {
-			setBoardData(fetchedBoard);
+			if (!isApiError(fetchedBoard)) {
+				setBoardData(fetchedBoard);
+			}
 		}
 	}, [isBoardFetched, fetchedBoard]);
 
+	useEffect(() => {
+		if (boardData?.bg_color) {
+			localStorage.setItem('theme', boardData.bg_color);
+		}
+
+		if (boardData?.photo) {
+			localStorage.setItem('photo', boardData?.photo?.file);
+		}
+
+		return () => {
+			localStorage.removeItem('theme');
+			localStorage.removeItem('photo');
+		};
+	}, [boardData]);
+
+	// const move = (
+	// 	source,
+	// 	destination,
+	// 	droppableSource,
+	// 	droppableDestination
+	// ) => {
+	// 	const sourceClone = Array.from(source);
+	// 	const destClone = Array.from(destination);
+	// 	const [removed] = sourceClone.splice(droppableSource.index, 1);
+
+	// 	destClone.splice(droppableDestination.index, 0, removed);
+
+	// 	const result = {};
+	// 	result[droppableSource.droppableId] = sourceClone;
+	// 	result[droppableDestination.droppableId] = destClone;
+
+	// 	return result;
+	// };
+
+	// const onDragEnd = (result: any) => {
+	// 	const { source, destination } = result;
+
+	// 	if (!destination) {
+	// 		return;
+	// 	}
+	// 	const sInd = +source.droppableId;
+	// 	const dInd = +destination.droppableId;
+
+	// 	if (sInd === dInd) {
+	// 		const items = reorder(
+	// 			columns[sInd],
+	// 			source.index,
+	// 			destination.index
+	// 		);
+	// 		const newState = [...columns];
+	// 		newState[sInd] = items;
+	// 		setColumns(newState);
+	// 	} else {
+	// 		const result = move(
+	// 			columns[sInd],
+	// 			columns[dInd],
+	// 			source,
+	// 			destination
+	// 		);
+	// 		const newState = [...columns];
+	// 		newState[sInd] = result[sInd];
+	// 		newState[dInd] = result[dInd];
+
+	// 		setColumns(newState.filter((group) => group.length));
+	// 	}
+	// };
+
+	// const reorder = (list, startIndex, endIndex) => {
+	// 	const result = Array.from(list);
+	// 	const [removed] = result.splice(startIndex, 1);
+	// 	result.splice(endIndex, 0, removed);
+
+	// 	return result;
+	// };
+
 	return (
-		<Box className={styles.board}>
-			<button
-				className={
-					isColumnCreateoOpen ? styles.columnCreatorBack : styles.columnCreator
-				}
-				onClick={
-					isColumnCreateoOpen ? () => {} : () => setIsColumnCreatorOpen(true)
-				}
-			>
-				{isColumnCreateoOpen ? (
-					<>
-						<textarea
-							className={styles.textInput}
-							value={columnName}
-							onChange={(e) => setColumnName(e.target.value)}
-							placeholder='ввести заголовок списка'
-						/>
-						<div className={styles.buttonsContainer}>
-							<button className={styles.taskCreator} onClick={buttonHandler}>
-								добавить колонку
-							</button>{' '}
-							<button
-								className={styles.close}
-								onClick={() => setIsColumnCreatorOpen(false)}
-							>
-								<img alt='' src={closeIcon} />
-							</button>
-						</div>
-					</>
-				) : (
-					'+ Добавьте еще одну колонку'
-				)}
-			</button>
-			<Reorder.Group
-				values={columns}
-				onReorder={setColumns}
-				className={styles.columnsContainer}
-				axis={canDragColumn ? 'x' : 'y'}
-			>
-				{calumns?.map((el) => (
-					<Reorder.Item
-						key={el.order}
-						value={el}
-						onDragEnd={() => updateColumnOrder(el)}
-					>
-						<Column
-							dragColumnEvent={changeDrag }
-							tasks={el.tasks}
-							columnId={el.id}
-							columnName={el.name}
-							key={el.id}
-							handleCreateTask={handleCreateTask}
-						/>
-					</Reorder.Item>
-				))}
-			</Reorder.Group>
+		<Box
+			className={styles.boardContent}
+			sx={{
+				backgroundColor: boardData?.bg_color ? boardData.bg_color : '',
+				backgroundImage: boardData?.photo
+					? `url(${boardData.photo.file})`
+					: '',
+			}}>
+			<DragDropContext onDragEnd={() => {}}>
+				<Box className={styles.board}>
+					<button
+						className={
+							isColumnCreateoOpen
+								? styles.columnCreatorBack
+								: styles.columnCreator
+						}
+						onClick={
+							isColumnCreateoOpen
+								? () => {}
+								: () => setIsColumnCreatorOpen(true)
+						}>
+						{isColumnCreateoOpen ? (
+							<>
+								<textarea
+									className={styles.textInput}
+									value={columnName}
+									onChange={(e) =>
+										setColumnName(e.target.value)
+									}
+									placeholder='Заголовок списка'
+								/>
+								<div className={styles.buttonsContainer}>
+									<button
+										className={styles.taskCreator}
+										onClick={buttonHandler}>
+										Добавить колонку
+									</button>
+									<IconButton
+										className={styles.close}
+										sx={{ width: '30px', height: '30px' }}
+										onClick={() =>
+											setIsColumnCreatorOpen(false)
+										}>
+										<CloseIcon
+											sx={{
+												width: '20px',
+												height: '20px',
+											}}
+										/>
+									</IconButton>
+								</div>
+							</>
+						) : (
+							'+ Добавьте еще одну колонку'
+						)}
+					</button>
+					<div className={styles.columnsContainer}>
+						{columns?.map((el, ind) => (
+							<Droppable key={ind} droppableId={String(ind)}>
+								{(provided) => (
+									<Column
+										tasks={el.tasks}
+										columnId={el.id}
+										columnName={el.name}
+										key={el.id}
+										handleCreateTask={handleCreateTask}
+										{...provided}
+									/>
+								)}
+							</Droppable>
+						))}
+					</div>
+				</Box>
+			</DragDropContext>
 		</Box>
 	);
 };

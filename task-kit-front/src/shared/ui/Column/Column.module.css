@@ -24,8 +24,9 @@
 	border: transparent;
 	border-radius: 4px;
 
-	font-size: 16px;
+	font-size: 14px;
 	border: 1px solid #dfe0e4;
+	cursor: pointer;
 
 	color: #ffffff;
 	order: 1;
@@ -35,38 +36,42 @@
 	text-transform: uppercase;
 }
 .taskCreatorBack {
-	/* border-radius: 6px; */
-	/* border: 1px solid #DFE0E4; */
+	/*border-radius: 6px;
+	*/ /*border: 1px solid #DFE0E4;
+	*/
 	background-color: transparent;
 	border: transparent;
 	outline: transparent;
-
+	padding: 10px;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
 	order: 1;
-
+	cursor: pointer;
 	font-size: 18px;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
 }
+
+/* .taskCreatorBack:hover {
+	background-color: #dfe0e4;
+} */
+
 .taskInput {
 	width: 96%;
 	height: 60px;
 	line-height: 10px;
-	padding: 4px;
+	padding: 10px;
 	border-radius: 6px;
 	background-color: #ffffff;
 	border: 1px solid #dfe0e4;
-
 	border: transparent;
 	outline: transparent;
 
 	resize: none;
-}
-.close {
-	font-size: 24px;
-	background-color: transparent;
-	border: transparent;
-	outline: transparent;
 }
 
 .task {
@@ -77,6 +82,7 @@
 	width: 100%;
 	display: block;
 	text-align: start;
+	cursor: pointer;
 }
 
 .taskLi {
@@ -87,4 +93,24 @@
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
+}
+
+.input {
+	background: transparent;
+	cursor: pointer;
+	border-color: transparent;
+	border-radius: 5px;
+	padding: 10px;
+	font-weight: 16px;
+	font-weight: 500;
+}
+
+.input:focus {
+	border-color: rgba(0, 0, 0, 0.242);
+}
+
+.buttonsContainer {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
 }

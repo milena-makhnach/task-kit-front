@@ -9,14 +9,10 @@ type InputProps = ComponentProps<typeof TextField> & {
 export const Input: FC<InputProps> = ({ errorText, ...restProps }) => {
 	return (
 		<div>
-			<TextField {...restProps} fullWidth />
-			{errorText && restProps.error && (
-				<FormHelperText
-					error={restProps.error}
-					sx={{ fontWeight: 600 }}>
-					{errorText}
-				</FormHelperText>
-			)}
+			<TextField {...restProps} fullWidth autoComplete='off' />
+			<FormHelperText error={restProps.error}>
+				{errorText && restProps.error ? errorText : ' '}
+			</FormHelperText>
 		</div>
 	);
 };

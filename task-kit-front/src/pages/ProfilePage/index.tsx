@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../shared/store/store';
 import { UserAvatar } from '../../entities/user/ui/UserAvatar';
 import lopa from '@/assets/icons/search.svg';
+import { useMutation } from '@tanstack/react-query';
+import { updateUser } from '@/shared/api/auth';
 
 export const ProfilePage: FC = () => {
 	const { firstname, lastname, email, avatar } = useSelector(
@@ -16,8 +18,23 @@ export const ProfilePage: FC = () => {
 	const [firstName, setFirstName] = useState<string>(firstname || '');
 	const [lastName, setLastName] = useState<string>(lastname || '');
 	const [changeEmail, setEmail] = useState<string>(email || '');
-	const [password, setPassword] = useState<string>('');
+	const [password, setPassword] = useState<string>('password');
 	const [newAvatar, setNewAvatar] = useState<File | null>(null);
+
+	const { mutate } = useMutation({
+		mutationFn: updateUser,
+		mutationKey: ['user'],
+	});
+
+	const handleUpdateUser = () => {
+		setIsResetOpen(!isResetOpen);
+		isResetOpen &&
+			mutate({
+				first_name: firstName,
+				last_name: lastName,
+				email: changeEmail,
+			});
+	};
 
 	const handleReset = () => {
 		setFirstName('');
@@ -44,7 +61,7 @@ export const ProfilePage: FC = () => {
 							name=''
 							id='ava'
 						/>
-						<label htmlFor='ava'>
+						<label htmlFor='ava' className={styles.avaLabel}>
 							<img alt='' src={lopa}></img>
 						</label>
 						<UserAvatar
@@ -55,8 +72,11 @@ export const ProfilePage: FC = () => {
 						/>
 					</Box>
 
-					<Typography fontSize={24} fontWeight={600}>
-						Welcome, {firstname || 'John'}
+					<Typography
+						fontSize={24}
+						fontWeight={600}
+						sx={{ textTransform: 'capitalize' }}>
+						Welcome, {firstname}
 					</Typography>
 				</Box>
 				<Box className={styles.devider} />
@@ -87,17 +107,14 @@ export const ProfilePage: FC = () => {
 						onChange={(e) => setPassword(e.target.value)}
 						disabled={!isResetOpen}
 					/>
-					<Button
-						variant='contained'
-						onClick={() => setIsResetOpen(!isResetOpen)}
-					>
+					<Button variant='contained' onClick={handleUpdateUser}>
 						{isResetOpen ? 'save' : 'Update profile'}
 					</Button>
 					<Button
 						variant='outlined'
 						onClick={handleReset}
-						disabled={!isResetOpen}
-					>
+						sx={{ color: '#ffff' }}
+						disabled={!isResetOpen}>
 						Reset
 					</Button>
 				</Box>
