@@ -14,7 +14,7 @@ export const Navbar: FC<navbarProps> = ({ children }) => {
 		<nav className={styles.navbar}>
 			<List sx={{ paddingTop: 0, paddingLeft: 0 }}>
 				<ListItem className={`${styles.navbarLi} ${styles.active}`}>
-					<Link to='/home'>Доски</Link>
+					<Link to='/'>Доски</Link>
 				</ListItem>
 			</List>
 			{children}

@@ -1,0 +1,26 @@
+.createColumn {
+	display: flex;
+	flex-direction: column;
+	height: fit-content;
+	backdrop-filter: blur(4px);
+	padding: 14px;
+	font-size: 16px;
+	border-radius: 10px;
+	border: transparent;
+	outline: transparent;
+	background: #ffffff;
+	cursor: pointer;
+	box-shadow: 0 4px 16px 0 rgba(36, 36, 40, 0.37);
+	backdrop-filter: blur(3.5px);
+	-webkit-backdrop-filter: blur(3.5px);
+	border-radius: 10px;
+	border: 1px solid #dfe0e4;
+}
+
+.btnsContainer {
+	width: 100%;
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	margin-top: 10px;
+}

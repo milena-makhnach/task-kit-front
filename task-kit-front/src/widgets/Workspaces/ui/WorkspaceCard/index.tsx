@@ -1,10 +1,16 @@
 import { FC } from 'react';
 import { Box, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Photo } from '@/shared/types/photo';
 
 import styles from './workspace-card.module.css';
+import { useAppDispatch } from '@/shared/store/store';
+import { setTheme } from '@/shared/slices/theme';
+import { findThemeToUse } from '@/shared/utils/find-theme-palette';
+import { themePalette } from '@/shared/theme';
+import { CanvasImage } from '@/shared/ui/CanvasImage';
+import { ThemePalette } from '@/shared/theme/theme-palette';
 
 type workspaceCardProps = {
 	cardName: string;
@@ -19,14 +25,34 @@ export const WorkspaceCard: FC<workspaceCardProps> = ({
 	cardPhoto,
 	id,
 }) => {
+	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+
+	const handleClick = (palette: ThemePalette) => {
+		if (cardBackground) {
+			const theme = findThemeToUse(themePalette, cardBackground);
+			dispatch(setTheme(theme));
+		}
+
+		if (cardPhoto) {
+			dispatch(setTheme(palette));
+		}
+
+		navigate(`/board/${id}`);
+	};
+
 	return (
-		<Link to={`/board/${id}`}>
+		<CanvasImage imgSrc={cardPhoto?.file || ''} getPalette={handleClick}>
 			<Box
 				className={styles.card}
 				sx={{
-					backgroundImage: `url(${cardPhoto ? cardPhoto.file : ''})`,
 					background: cardBackground ? cardBackground : '',
 				}}>
+				{cardPhoto && (
+					<Box className={styles.cardImg}>
+						<img src={cardPhoto.file} alt={cardPhoto.alt_desc} />
+					</Box>
+				)}
 				<Box className={styles.cardFade} />
 				<Box className={styles.cardContent}>
 					<Typography
@@ -36,6 +62,6 @@ export const WorkspaceCard: FC<workspaceCardProps> = ({
 					</Typography>
 				</Box>
 			</Box>
-		</Link>
+		</CanvasImage>
 	);
 };

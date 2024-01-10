@@ -1,0 +1,40 @@
+.popoverHeader {
+	padding: 4px 8px;
+	position: relative;
+	text-align: center;
+	display: grid;
+	align-items: center;
+	grid-template-columns: 32px 1fr 32px;
+}
+
+.popoverClose {
+	grid-column: 3;
+	grid-row: 1;
+	border-radius: 8px;
+	display: flex;
+	width: 32px;
+	height: 32px;
+	justify-content: center;
+	align-items: center;
+}
+
+.popoverContent {
+	padding: 12px;
+}
+
+.popoverTitle {
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: -0.003em;
+	line-height: 40px;
+	display: block;
+	position: relative;
+	height: 40px;
+	margin: 0;
+	overflow: hidden;
+	padding: 0 32px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	grid-column: 1 / span 3;
+	grid-row: 1;
+}

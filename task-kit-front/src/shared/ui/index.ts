@@ -1,2 +1,9 @@
+export { Popover } from './Popover';
 export { Input } from './Input';
+export { TaskCard } from './TaskCard/TaskCard';
 export { Logo } from './Logo';
+export { Chip } from './Chip/Chip';
+export { Board } from '../../entities/board/ui/Board/Board';
+export { Column } from '../../entities/column/ui/Column/Column';
+export { BoardMenuColor } from './BoardMenuColor/index';
+export { BoardMenuPhoto } from './BoardMenuPhoto/index';

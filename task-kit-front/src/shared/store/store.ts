@@ -5,10 +5,12 @@ import { useDispatch } from 'react-redux';
 
 import userSlice from '@/entities/user/slice/user-slice';
 import themeSlice from '@/shared/slices/theme';
+import { createBoardReducer } from '@/features/create-board/slice/selectBgSlice';
 
 const rootReducer = combineReducers({
 	user: userSlice,
 	theme: themeSlice,
+	createBoard: createBoardReducer,
 });
 
 const persistConfig = {

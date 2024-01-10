@@ -1,5 +1,4 @@
 import styles from './DatePopover.module.css';
-import 'react-calendar/dist/Calendar.css';
 import { useEffect, useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';

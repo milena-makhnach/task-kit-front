@@ -9,17 +9,14 @@ import { WorkspaceCard } from './ui/WorkspaceCard';
 
 import styles from './workspaces.module.css';
 import { WorkspaceAddCard } from './ui/WorkspaceAddCard';
-import { Chip } from '../../shared/ui/Chip/Chip';
-import { CreateBoard, BoardResponse } from '../../shared/types/board';
-import { api } from '@/shared/api/base-query';
-import mockUserImage from '../../assets/icons/user.svg';
+import { BoardResponse } from '../../shared/types/board';
 import { UserAvatar } from '@/entities/user/ui/UserAvatar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/shared/store/store';
 import { getAllBoards } from '@/shared/api/board';
 import { isApiError } from '@/shared/type-guards/query-error-guard';
 
-export const Workspaces: FC = () => {
+export const Boards: FC = () => {
 	const [boards, setBoards] = useState<BoardResponse[]>([]);
 
 	const { data, isSuccess } = useQuery({
@@ -57,7 +54,7 @@ export const Workspaces: FC = () => {
 				</Typography>
 			</Box>
 			<Box className={styles.cardsWrapper}>
-				{boards?.map((board) => (
+				{boards.map((board) => (
 					<WorkspaceCard
 						key={board.id}
 						id={board.id}

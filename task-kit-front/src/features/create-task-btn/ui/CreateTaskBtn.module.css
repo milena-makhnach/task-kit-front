@@ -1,0 +1,10 @@
+.createColumn {
+}
+
+.btnsContainer {
+	width: 100%;
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	margin-top: 10px;
+}

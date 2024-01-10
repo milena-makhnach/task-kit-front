@@ -1,0 +1,11 @@
+.photos {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 5px;
+}
+
+.photosWrapper {
+	padding-block: 5px;
+	max-height: 65vh;
+	overflow-y: auto;
+}

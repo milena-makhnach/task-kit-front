@@ -1,7 +1,7 @@
 import styles from './FilePopover.module.css';
 import Box from '@mui/material/Box/Box';
 import { Button, Input, InputAdornment, Typography } from '@mui/material';
-import { MuiFileInput } from 'mui-file-input';
+// import { MuiFileInput } from 'mui-file-input';
 import { useState, useCallback, ChangeEvent } from 'react';
 import { api } from '@/shared/api/base-query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

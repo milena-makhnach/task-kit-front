@@ -6,11 +6,19 @@ a {
 .card {
 	position: relative;
 	padding: 8px;
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-size: cover;
 	border-radius: 3px;
 	flex-shrink: 0;
+}
+
+.cardImg {
+	position: absolute;
+	inset: 0;
+}
+
+.cardImg img {
+	width: 100%;
+	height: 100%;
+	border-radius: 3px;
 }
 
 .cardContent {
@@ -40,6 +48,7 @@ a {
 		display: block;
 		position: absolute;
 		background-color: #00000026;
+		border-radius: 3px;
 		bottom: 0;
 		left: 0;
 		right: 0;

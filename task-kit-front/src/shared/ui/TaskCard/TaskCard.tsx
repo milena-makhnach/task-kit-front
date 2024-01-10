@@ -10,8 +10,7 @@ import coverIcon from '../../../assets/icons/window.svg';
 import removeIcon from '../../../assets/icons/delete.svg';
 import CloseIcon from '@mui/icons-material/Close';
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+// import ReactQuill from 'react-quill';
 import { LabelPopoverButton } from '../LabelPopover/ui/LabelPopoverButton';
 import { LabelPopover } from '../LabelPopover/LabelPopover';
 import { MembersPopover } from '../MembersPopover/MembersPopover';
@@ -176,12 +175,12 @@ export const TaskCard: FC<TaskCardType> = ({
 
 						{isTextEditorOpen ? (
 							<>
-								<ReactQuill
+								{/* <ReactQuill
 									className={styles.textEditor}
 									theme='snow'
 									value={value}
 									onChange={setValue}
-								/>
+								/> */}
 								<Box className={styles.btnWrapper}>
 									<Button onClick={handleUpdateTaskDesc}>
 										Сохранить
@@ -242,12 +241,12 @@ export const TaskCard: FC<TaskCardType> = ({
 							/>
 							{isCommentOpen ? (
 								<Box>
-									<ReactQuill
+									{/* <ReactQuill
 										className={styles.textEditor}
 										theme='snow'
 										value={comment}
 										onChange={setComment}
-									/>
+									/> */}
 									<Box className={styles.btnWrapper}>
 										<Button onClick={handleCreateComment}>
 											Сохранить

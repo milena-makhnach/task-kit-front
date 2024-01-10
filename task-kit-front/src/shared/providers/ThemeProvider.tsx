@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useEffect, useLayoutEffect, useState } from 'react';
 import {
 	createTheme,
 	ThemeProvider as Provider,
@@ -15,17 +15,16 @@ type ThemeProviderPropsType = {
 export const ThemeProvider: FC<ThemeProviderPropsType> = ({ children }) => {
 	const { theme: rootTheme } = useSelector((state: RootState) => state.theme);
 
-	const base = createTheme(baseTheme);
+	const base = createTheme(baseTheme, {
+		palette: {
+			primary: { ...rootTheme },
+		},
+	});
 
 	const [theme, setTheme] = useState<Theme>(base);
 
 	useEffect(() => {
-		const theme = createTheme({
-			...baseTheme,
-			palette: {
-				primary: { ...rootTheme },
-			},
-		});
+		const theme = createTheme(base);
 
 		setTheme(theme);
 	}, [rootTheme]);

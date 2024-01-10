@@ -1,5 +1,9 @@
-.sidebarItem {
+.avatarWrapper {
+	font-size: 16px;
+	margin-block: 6px;
 	display: flex;
+	justify-content: start;
 	align-items: center;
-	gap: 15px;
+	gap: 4px;
+	padding-inline: 5px;
 }

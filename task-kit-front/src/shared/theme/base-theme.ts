@@ -13,6 +13,11 @@ export const baseTheme = {
 				input: {
 					padding: '12px !important',
 				},
+				multiline: {
+					padding: 0,
+					fontSize: '16px',
+					height: 'unset',
+				},
 			},
 		},
 		MuiFormLabel: {
@@ -42,6 +47,21 @@ export const baseTheme = {
 					paddingInline: '5px',
 					lineHeight: '80%',
 					marginTop: '7px',
+				},
+			},
+		},
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					overflow: 'hidden',
+				},
+			},
+		},
+		MuiButton: {
+			styleOverrides: {
+				root: {
+					lineHeight: 'normal',
+					minWidth: 'unset',
 				},
 			},
 		},
