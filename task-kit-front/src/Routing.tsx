@@ -10,7 +10,7 @@ import { BoardPage } from './pages/BoardPage';
 import { HomePage } from './pages/HomePage';
 import { Signup } from './features/signup/ui/Signup';
 import { Login } from './features/login/ui/Login';
-import { TaskCard } from './shared/ui/TaskCard/TaskCard';
+import { TaskExpendedCard } from './widgets/TaskExpendedCard/TaskExpendedCard';
 import { setTheme } from './shared/slices/theme';
 
 export const Routing: FC = () => {
@@ -43,7 +43,7 @@ export const Routing: FC = () => {
 						<Route
 							path={'/board/:board_id/task/:task_id'}
 							//@ts-ignore
-							element={<TaskCard />}
+							element={<TaskExpendedCard />}
 						/>
 					)}
 				</Route>

@@ -1,3 +1,5 @@
+import { textTransform } from '@mui/system';
+
 export const baseTheme = {
 	typography: {
 		fontFamily: ['Montserrat', 'sans-serif'].join(','),
@@ -17,6 +19,14 @@ export const baseTheme = {
 					padding: 0,
 					fontSize: '16px',
 					height: 'unset',
+				},
+			},
+		},
+		MuiOutlinedInput: {
+			styleOverrides: {
+				input: {
+					fontSize: '14px',
+					fontWeight: 500,
 				},
 			},
 		},
@@ -62,6 +72,36 @@ export const baseTheme = {
 				root: {
 					lineHeight: 'normal',
 					minWidth: 'unset',
+				},
+			},
+		},
+		MuiPickersLayout: {
+			styleOverrides: {
+				root: {
+					width: '100%',
+					minWidth: 'unset !important',
+				},
+			},
+		},
+		MuiDateCalendar: {
+			styleOverrides: {
+				root: {
+					width: '100%',
+				},
+			},
+		},
+		MuiPickersCalendarHeader: {
+			styleOverrides: {
+				label: {
+					fontSize: '14px',
+					textTransform: 'capitalize',
+				},
+			},
+		},
+		MuiYearCalendar: {
+			styleOverrides: {
+				root: {
+					width: '100%',
 				},
 			},
 		},

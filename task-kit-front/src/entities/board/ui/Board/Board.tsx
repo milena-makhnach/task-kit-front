@@ -2,25 +2,22 @@ import { FC, useEffect, useState } from 'react';
 import Box from '@mui/material/Box/Box';
 import { useParams } from 'react-router-dom';
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
+import { useSelector } from 'react-redux';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Column } from '../../../column/ui/Column/Column';
-
-import styles from './Board.module.css';
-import {
-	ColumnResponse,
-	ColumnResponse as ColumnType,
-} from '@/shared/types/column';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ColumnResponse as ColumnType } from '@/shared/types/column';
 import { Board as BoardType } from '@/shared/types/board';
-import { createTask } from '@/shared/api/task';
+import { createTask, updateTask } from '@/shared/api/task';
 import { createColumn, getAllColumns, updateColumn } from '@/shared/api/column';
 import { isApiError } from '@/shared/type-guards/query-error-guard';
 import { getBoard } from '@/shared/api/board';
 import { Photo } from '@/shared/types/photo';
-import { useSelector } from 'react-redux';
 import { RootState } from '@/shared/store/store';
 import { CreateColumnBtn } from '@/features/create-column-btn/ui/CreateColumnBtn';
 import { reorder, reorderQuoteMap } from '../model/reorder-tasks-utils';
+
+import styles from './Board.module.css';
 
 type BoardPropsType = {
 	setBoardBg: (bg: Photo | string | null) => void;
@@ -42,6 +39,11 @@ export const Board: FC<BoardPropsType> = ({ setBoardBg }) => {
 	const { data: fetchedBoard, isSuccess: isBoardFetched } = useQuery({
 		queryFn: getBoard,
 		queryKey: ['board', { board_id: board_id as string }],
+	});
+
+	const { mutate: updateTaskOrder } = useMutation({
+		mutationFn: updateTask,
+		mutationKey: ['task'],
 	});
 
 	const { mutate } = useMutation({
@@ -94,16 +96,16 @@ export const Board: FC<BoardPropsType> = ({ setBoardBg }) => {
 		mutateTask(newTask);
 	};
 
-	const updateColumnOrder = (item: ColumnResponse) => {
-		const findColumnIndex = columns.findIndex(
-			(column) => column.id === item.id
-		);
-
+	const updateColumnOrder = (index: number, id: string) => {
 		mutateColumn({
-			order: findColumnIndex + 1,
+			order: index,
 			board_id: `${board_id}`,
-			id: item.id,
+			id: +id,
 		});
+	};
+
+	const handleUpdateTask = (index: number, id: string, column_id: string) => {
+		updateTaskOrder({ order: index, id, column_id: +column_id });
 	};
 
 	useEffect(() => {
@@ -129,6 +131,7 @@ export const Board: FC<BoardPropsType> = ({ setBoardBg }) => {
 	}, [theme, boardData]);
 
 	const onDragEnd = (result: DropResult) => {
+		console.log(result);
 		if (!result.destination) {
 			return;
 		}
@@ -152,7 +155,7 @@ export const Board: FC<BoardPropsType> = ({ setBoardBg }) => {
 			);
 
 			setColumns(reorderedorder);
-
+			updateColumnOrder(destination.index, result.draggableId);
 			return;
 		}
 
@@ -163,6 +166,12 @@ export const Board: FC<BoardPropsType> = ({ setBoardBg }) => {
 		});
 
 		setColumns(data.quoteMap);
+
+		handleUpdateTask(
+			destination.index,
+			result.draggableId,
+			destination.droppableId
+		);
 	};
 
 	return (

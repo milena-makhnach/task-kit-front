@@ -74,17 +74,6 @@
 	resize: none;
 }
 
-.task {
-	padding: 8px 6px;
-	background-color: #ffffff;
-	border: 1px solid #dfe0e4;
-	border-radius: 6px;
-	width: 100%;
-	display: block;
-	text-align: start;
-	cursor: pointer;
-}
-
 .taskLi {
 	list-style-type: none;
 }
@@ -94,6 +83,11 @@
 	flex-direction: column;
 	gap: 5px;
 	min-height: 2px;
+}
+
+.tasksDraggingOver {
+	background-color: #0000001e;
+	border-radius: 6px;
 }
 
 .input {

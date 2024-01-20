@@ -1,0 +1,189 @@
+.taskWrapper {
+	position: fixed;
+	inset: 0;
+	z-index: 3;
+	backdrop-filter: blur(2px);
+	background-color: #0000007d;
+	display: flex;
+	justify-content: flex-start;
+	flex-flow: column nowrap;
+	align-items: center;
+	overflow: hidden;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 30px 0;
+}
+
+.taskCover {
+	display: flex;
+	align-items: center;
+	position: relative;
+}
+
+.taskCoverIconWrapper {
+	position: absolute;
+	left: -40px;
+}
+
+.taskCoverIconWrapper img {
+	width: 100%;
+	height: 100%;
+}
+
+.task {
+	background-color: #f1f2f4;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	max-width: 700px;
+	width: 100%;
+}
+
+.leftSide {
+	display: flex;
+	flex-direction: column;
+	padding: 0 8px 8px 16px;
+	width: 100%;
+}
+
+.rightSide {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 0 16px 8px 8px;
+}
+
+.taskHeader {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 8px 52px 8px 56px;
+}
+
+.input {
+	background: transparent;
+	cursor: pointer;
+	border-color: transparent;
+	border-radius: 5px;
+	padding: 10px;
+	padding-left: 5px;
+	font-weight: 16px;
+	font-weight: 500;
+	width: 100%;
+	margin-left: -5px;
+}
+
+.taskContent {
+	display: flex;
+}
+
+.taskSubscribe {
+	width: fit-content;
+}
+
+.textEditor {
+	height: 200px;
+}
+
+.comment {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding-left: 40px;
+	position: relative;
+	margin-bottom: 16px;
+}
+
+.btnWrapper {
+	display: flex;
+	width: 100%;
+	margin-top: 60px;
+	gap: 12px;
+	color: #ffff;
+}
+.btnWrapper button {
+	background-color: transparent;
+	outline: transparent;
+	border: transparent;
+	background-color: transparent;
+	border-radius: 3px;
+	width: fit-content;
+}
+.btnWrapper button:nth-child(1) {
+	background-color: #0e67e6;
+	color: #ffffff;
+}
+.btnWrapper button:nth-child(2) {
+}
+.btnWrapper button:nth-child(3) {
+	background-color: #e6e6e8;
+	margin-left: auto;
+}
+.commentWrapper {
+	display: flex;
+	gap: 12px;
+}
+
+.commentEditorWrapper {
+	max-width: 430px;
+	width: 100%;
+}
+
+.commentEditorWrapper .textEditor {
+	max-height: 120px;
+}
+
+.commentWrapper img {
+	width: 30px;
+	height: 30px;
+}
+
+.openEditorBtn {
+	width: 100%;
+	height: fit-content;
+	min-height: 70px;
+	width: 100%;
+	border-radius: 3px;
+	padding: 10px;
+	box-sizing: border-box;
+	cursor: pointer;
+	display: flex;
+	border: none;
+	background-color: var(--bg-base-btn);
+}
+
+.openEditorBtn.filledWithText {
+	background-color: transparent;
+}
+
+.openEditorBtn:hover {
+	background-color: var(--bg-base-btn-hover);
+}
+
+.descript {
+	position: relative;
+	margin-bottom: 16px;
+	padding-left: 40px;
+}
+
+.taskDescIconWrapper {
+	position: absolute;
+	left: -3px;
+}
+
+.openCommentEditorBtn {
+	font-size: 12px;
+	font-weight: 500;
+	border-radius: 3px;
+	padding: 10px;
+	min-height: 60px;
+	width: 100%;
+	resize: none;
+	border: transparent;
+	outline: transparent;
+}
+
+.openCommentEditorBtn::placeholder {
+	color: #000;
+}

@@ -1,0 +1,27 @@
+.attach {
+	position: relative;
+	margin-bottom: 16px;
+	padding-left: 40px;
+}
+
+.attachHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.iconWrapper {
+	position: absolute;
+	left: 0;
+}
+
+.iconWrapper img {
+	width: 20px;
+	height: 20px;
+}
+
+.files {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}

@@ -1,0 +1,15 @@
+.task {
+	padding: 8px 6px;
+	background-color: #ffffff;
+	border: 1px solid #dfe0e4;
+	border-radius: 6px;
+	width: 100%;
+	display: block;
+	text-align: start;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.taskDragging {
+	padding: 10px 6px;
+}

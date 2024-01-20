@@ -1,6 +1,6 @@
 export { Popover } from './Popover';
 export { Input } from './Input';
-export { TaskCard } from './TaskCard/TaskCard';
+export { TaskExpendedCard } from '../../widgets/TaskExpendedCard/TaskExpendedCard';
 export { Logo } from './Logo';
 export { Chip } from './Chip/Chip';
 export { Board } from '../../entities/board/ui/Board/Board';

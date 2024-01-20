@@ -76,6 +76,20 @@ export const uploadFile = async (
 	}
 };
 
+export const deletedFile = async (
+	id: number
+): Promise<ApiErrorResponse | void> => {
+	try {
+		await api.delete(`/document/${id}`);
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};
+
 export const removeTask = async (
 	task_id: number
 ): Promise<ApiErrorResponse | void> => {

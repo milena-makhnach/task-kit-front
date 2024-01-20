@@ -1,17 +1,17 @@
 import { FC, useState, useEffect } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import { Reorder } from 'framer-motion';
-import styles from './Column.module.css';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box/Box';
-import { TaskCard } from '../../../../shared/ui/TaskCard/TaskCard';
-import { TaskResponse } from '@/shared/types/task';
-import { api } from '@/shared/api/base-query';
 import { useMutation } from '@tanstack/react-query';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
-import { updateTask } from '@/shared/api/task';
+import { TaskResponse } from '@/shared/types/task';
 import { updateColumn } from '@/shared/api/column';
 import { CreateTaskBtn } from '@/features/create-task-btn/ui/CreateTaskBtn';
+
+import styles from './Column.module.css';
+import { Portal } from '@/shared/ui/Portal';
+import { TaskCard } from '@/widgets/TaskCard';
+import { TaskExpendedCard } from '@/widgets/TaskExpendedCard/TaskExpendedCard';
 
 type ColumnType = {
 	columnId: number;
@@ -28,19 +28,15 @@ export const Column: FC<ColumnType> = ({
 	columnName,
 	handleCreateTask,
 }) => {
-	const { board_id } = useParams();
+	const navigate = useNavigate();
 	const location = useLocation();
+	const { board_id } = useParams();
 
 	const [colName, setColName] = useState<string>(columnName || '');
 	const [isTaskOpen, setIsTaskOpen] = useState(false);
 	const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
 	const [tasksList, setTaskList] = useState<TaskResponse[]>(tasks || []);
-
-	const { mutate } = useMutation({
-		mutationFn: updateTask,
-		mutationKey: ['task'],
-	});
 
 	const { mutate: mutateColumn } = useMutation({
 		mutationFn: updateColumn,
@@ -63,9 +59,12 @@ export const Column: FC<ColumnType> = ({
 		}
 	};
 
-	const handleUpdateTask = (task: TaskResponse) => {
-		const taskToUpdate = tasksList.findIndex((item) => item.id === task.id);
-		mutate({ order: taskToUpdate + 1, id: `${task.id}` });
+	const handleClickTask = (id: number) => {
+		navigate(`/board/${board_id}/task/${id}`, {
+			state: { background: location },
+		});
+		setIsTaskOpen(true);
+		setSelectedTaskId(id);
 	};
 
 	const handleCloseModal = () => {
@@ -100,33 +99,19 @@ export const Column: FC<ColumnType> = ({
 						droppableId={String(columnId)}
 						type='QUOTES'
 						renderClone={(provided, snapshot, item) => (
-							<div
-								className={styles.taskLi}
-								{...provided.draggableProps}
-								{...provided.dragHandleProps}
-								ref={provided.innerRef}>
-								{/* <Link
-										to={`/board/${board_id}/task/${el.id}`}
-										state={{
-											background: location,
-										}}>
-										<button
-											className={styles.task}
-											onClick={(e) => {
-												setIsTaskOpen(true);
-												setSelectedTaskId(
-													el.id
-												);
-											}}>
-											{el.name}
-										</button>
-									</Link> */}
-								{tasksList[item.source.index].name}
-							</div>
+							<TaskCard
+								provided={provided}
+								snapshot={snapshot}
+								handleClickTask={handleClickTask}
+								{...tasksList[item.source.index]}
+							/>
 						)}>
 						{(dropProvided, dropSnapshot) => (
 							<div
-								className={styles.tasks}
+								className={`${styles.tasks} ${
+									dropSnapshot.isDraggingOver &&
+									styles.tasksDraggingOver
+								}`}
 								ref={dropProvided.innerRef}
 								{...dropProvided.droppableProps}>
 								{tasksList?.map((el, inx) => (
@@ -134,31 +119,15 @@ export const Column: FC<ColumnType> = ({
 										draggableId={String(el.id)}
 										index={inx}
 										key={el.id}>
-										{(prov) => (
-											<div
-												key={el.id}
-												className={styles.taskLi}
-												{...prov.draggableProps}
-												{...prov.dragHandleProps}
-												ref={prov.innerRef}>
-												{/* <Link
-													to={`/board/${board_id}/task/${el.id}`}
-													state={{
-														background: location,
-													}}>
-													<button
-														className={styles.task}
-														onClick={(e) => {
-															setIsTaskOpen(true);
-															setSelectedTaskId(
-																el.id
-															);
-														}}>
-														{el.name}
-													</button>
-												</Link> */}
-												{el.name}
-											</div>
+										{(prov, snapshot) => (
+											<TaskCard
+												provided={prov}
+												snapshot={snapshot}
+												handleClickTask={
+													handleClickTask
+												}
+												{...el}
+											/>
 										)}
 									</Draggable>
 								))}
@@ -168,13 +137,15 @@ export const Column: FC<ColumnType> = ({
 					</Droppable>
 					<CreateTaskBtn handleCreateTask={handleCreateNewTask} />
 
-					{/* {isTaskOpen && selectedTaskId && (
-						<TaskCard
-							closeTask={handleCloseModal}
-							taskId={selectedTaskId}
-							columnName={columnName}
-						/>
-					)} */}
+					{isTaskOpen && selectedTaskId && (
+						<Portal>
+							<TaskExpendedCard
+								closeTask={handleCloseModal}
+								taskId={selectedTaskId}
+								columnName={columnName}
+							/>
+						</Portal>
+					)}
 				</Box>
 			)}
 		</Draggable>

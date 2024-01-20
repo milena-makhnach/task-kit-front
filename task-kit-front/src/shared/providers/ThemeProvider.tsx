@@ -18,6 +18,9 @@ export const ThemeProvider: FC<ThemeProviderPropsType> = ({ children }) => {
 	const base = createTheme(baseTheme, {
 		palette: {
 			primary: { ...rootTheme },
+			secondary: {
+				main: '#1976d2',
+			},
 		},
 	});
 

@@ -1,9 +1,11 @@
+import { LabelType } from './label';
 import { Photo } from './photo';
 
 export interface Board {
 	name: string;
 	bg_color: string | null;
 	photo: Photo | null;
+	labels: LabelType[]
 }
 
 export type CreateBoard = {

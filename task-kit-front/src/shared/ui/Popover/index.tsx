@@ -25,8 +25,9 @@ export const Popover: FC<PopoverButtonType> = ({
 			MenuListProps={{
 				sx: {
 					paddingTop: 0,
-					minWidth: '300px',
-					maxWidth: '350px',
+					width: '100%',
+					maxWidth: '305px',
+					minWidth: '305px',
 				},
 			}}
 			sx={{ paddintTop: 0, borderRadius: '8px', minWidth: '300px' }}>

@@ -1,0 +1,12 @@
+.cover {
+	position: relative;
+	min-height: 115px;
+	border-radius: 8px 8px 0 0;
+}
+
+.coverBtn {
+	gap: 10px;
+	position: absolute !important;
+	bottom: 15px;
+	right: 15px;
+}
