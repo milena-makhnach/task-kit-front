@@ -11,7 +11,7 @@ export type CommentResponseType = {
 	id: number;
 	text: string;
 	task: TaskResponse;
-	user_id: UserResponse;
-	create_at: string;
+	user: UserResponse;
+	created_at: string;
 	updated_at: string;
 };

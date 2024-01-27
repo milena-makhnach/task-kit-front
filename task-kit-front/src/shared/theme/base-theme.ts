@@ -1,5 +1,3 @@
-import { textTransform } from '@mui/system';
-
 export const baseTheme = {
 	typography: {
 		fontFamily: ['Montserrat', 'sans-serif'].join(','),
@@ -27,6 +25,7 @@ export const baseTheme = {
 				input: {
 					fontSize: '14px',
 					fontWeight: 500,
+					textOverflow: 'ellipsis',
 				},
 			},
 		},

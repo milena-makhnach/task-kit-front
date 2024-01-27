@@ -50,7 +50,15 @@ export const TaskDescription: FC<TaskDescriptionPropsType> = ({
 							Сохранить
 						</Button>
 						<Button
-							sx={{ textTransform: 'none', fontSize: '14px' }}
+							sx={{
+								textTransform: 'none',
+								fontSize: '14px',
+								backgroundColor: 'transparent',
+								color: '#000',
+								'&:hover': {
+									backgroundColor: 'var(--bg-base-btn)',
+								},
+							}}
 							onClick={() => {
 								setIsTextEdittorOpen(false);
 								setValue(desc || '');

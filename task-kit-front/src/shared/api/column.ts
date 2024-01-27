@@ -67,3 +67,18 @@ export const updateColumn = async (
 		return { message: 'Unexpected error', code: 400 };
 	}
 };
+
+export const deleteColumn = async (ids: {
+	board_id: number;
+	column_id: number;
+}): Promise<ApiErrorResponse | void> => {
+	try {
+		await api.delete(`/board/${ids.board_id}/columns/${ids.column_id}`);
+	} catch (err) {
+		if (isAxiosError(err)) {
+			return err?.response?.data;
+		}
+
+		return { message: 'Unexpected error', code: 400 };
+	}
+};

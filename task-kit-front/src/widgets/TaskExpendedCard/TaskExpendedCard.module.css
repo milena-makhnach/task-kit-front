@@ -187,3 +187,23 @@
 .openCommentEditorBtn::placeholder {
 	color: #000;
 }
+
+.commentActions ul {
+	display: flex;
+	gap: 25px;
+	margin-left: 15px;
+	margin-top: 5px;
+}
+
+.commentActions ul li {
+	cursor: pointer;
+}
+
+.commentActions ul li span {
+	font-weight: 500;
+	text-decoration: underline;
+}
+
+.commentActions ul li span:hover {
+	color: var(--base-theme-clr);
+}

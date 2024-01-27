@@ -1,17 +1,20 @@
 import { FC, useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box/Box';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { TaskResponse } from '@/shared/types/task';
-import { updateColumn } from '@/shared/api/column';
+import { deleteColumn, updateColumn } from '@/shared/api/column';
 import { CreateTaskBtn } from '@/features/create-task-btn/ui/CreateTaskBtn';
 
 import styles from './Column.module.css';
 import { Portal } from '@/shared/ui/Portal';
 import { TaskCard } from '@/widgets/TaskCard';
 import { TaskExpendedCard } from '@/widgets/TaskExpendedCard/TaskExpendedCard';
+
+import deleteIcon from '@/assets/icons/delete.svg';
+import { IconButton } from '@mui/material';
 
 type ColumnType = {
 	columnId: number;
@@ -30,6 +33,7 @@ export const Column: FC<ColumnType> = ({
 }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
+	const queryClient = useQueryClient();
 	const { board_id } = useParams();
 
 	const [colName, setColName] = useState<string>(columnName || '');
@@ -41,6 +45,14 @@ export const Column: FC<ColumnType> = ({
 	const { mutate: mutateColumn } = useMutation({
 		mutationFn: updateColumn,
 		mutationKey: ['column'],
+	});
+
+	const { mutate: deleteCol } = useMutation({
+		mutationFn: deleteColumn,
+		mutationKey: ['column'],
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['columns'] });
+		},
 	});
 
 	const handleCreateNewTask = (taskName: string) => {
@@ -72,6 +84,12 @@ export const Column: FC<ColumnType> = ({
 		setSelectedTaskId(null);
 	};
 
+	const handleDeleteColumn = () => {
+		if (board_id) {
+			deleteCol({ board_id: +board_id, column_id: columnId });
+		}
+	};
+
 	useEffect(() => {
 		setTaskList(tasks);
 	}, [tasks]);
@@ -88,13 +106,25 @@ export const Column: FC<ColumnType> = ({
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
 					className={styles.column}>
-					<input
-						className={styles.input}
-						placeholder='Заголовок колонки'
-						value={colName}
-						onChange={(e) => setColName(e.target.value)}
-						onBlur={handleUpdateColumn}
-					/>
+					<Box
+						sx={{
+							display: 'flex',
+							alignItems: 'center',
+							gap: '5px',
+						}}>
+						<input
+							className={styles.input}
+							placeholder='Заголовок колонки'
+							value={colName}
+							onChange={(e) => setColName(e.target.value)}
+							onBlur={handleUpdateColumn}
+						/>
+						<IconButton
+							sx={{ width: '30px', height: '30px' }}
+							onClick={handleDeleteColumn}>
+							<img src={deleteIcon} alt='Delete Icon' />
+						</IconButton>
+					</Box>
 					<Droppable
 						droppableId={String(columnId)}
 						type='QUOTES'

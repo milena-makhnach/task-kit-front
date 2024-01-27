@@ -1,6 +1,12 @@
 import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, IconButton, Modal, Typography } from '@mui/material';
+import {
+	Box,
+	Button,
+	IconButton,
+	OutlinedInput,
+	Typography,
+} from '@mui/material';
 import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
 import { useMutation } from '@tanstack/react-query';
@@ -13,6 +19,7 @@ import { UserAvatar } from '@/entities/user/ui/UserAvatar/index';
 import styles from './header.module.css';
 import { UserMenu } from '@/entities/user/ui/UserMenu';
 import { invite } from '@/shared/api/auth';
+import { Portal } from '@/shared/ui/Portal';
 
 export const Header: FC = () => {
 	const { board_id } = useParams();
@@ -38,12 +45,21 @@ export const Header: FC = () => {
 		<Box className={styles.header}>
 			<Logo />
 			<Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-				{isAuth && (
-					<button
+				{isAuth && board_id && (
+					<Button
+						sx={{
+							textTransform: 'none',
+							fontSize: '14px',
+							backgroundColor: 'transparent',
+							color: '#000',
+							'&:hover': {
+								backgroundColor: 'var(--bg-base-btn)',
+							},
+						}}
 						className={styles.invite}
 						onClick={() => setOpenModal(true)}>
 						Пригласить друга
-					</button>
+					</Button>
 				)}
 				{isAuth && (
 					<IconButton
@@ -60,62 +76,79 @@ export const Header: FC = () => {
 			</Box>
 			<UserMenu anchorEl={anchorEl} setAnchorEl={setanchorEl} />
 
-			<Modal
-				open={openModal}
-				onClose={() => setOpenModal(false)}
-				aria-labelledby='modal-modal-title'
-				aria-describedby='modal-modal-description'>
-				<Box
-					sx={{
-						position: 'absolute' as 'absolute',
-						top: '50%',
-						left: '50%',
-						transform: 'translate(-50%, -50%)',
-						width: 450,
-						bgcolor: 'background.paper',
-						boxShadow: 24,
-						p: 6,
-						borderRadius: '8px',
-					}}>
-					<IconButton
+			{openModal && (
+				<Portal>
+					<Box
 						sx={{
-							position: 'absolute',
-							top: '5px',
-							right: '5px',
-						}}
-						onClick={() => setOpenModal(false)}>
-						<CloseIcon />
-					</IconButton>
-					<Typography
-						id='modal-modal-title'
-						fontWeight={500}
-						textAlign='center'
-						mb={2}>
-						Пригласить друга по Email
-					</Typography>
-					<Box sx={{ display: 'flex', gap: '15px' }}>
-						<Input
-							value={email}
-							placeholder='Введите email для приглашения'
-							fullWidth
-							onChange={(e) => setEmail(e.target.value)}
-							sx={{ textOverflow: 'ellipsis' }}
-						/>
-						<button
-							className={styles.submitBtn}
-							onClick={() => {
-								email &&
-									mutate({
-										board_id: board_id as string,
-										user_id: id as number,
-										email,
-									});
+							position: 'fixed',
+							inset: 0,
+							zIndex: 3,
+							backdropFilter: 'blur(2px)',
+							backgroundColor: '#0000007d',
+						}}>
+						<Box
+							sx={{
+								position: 'absolute',
+								top: '50%',
+								left: '50%',
+								transform: 'translate(-50%, -50%)',
+								width: 450,
+								bgcolor: 'background.paper',
+								boxShadow: 24,
+								p: 3,
+								borderRadius: '8px',
 							}}>
-							Отправить
-						</button>
+							<IconButton
+								sx={{
+									position: 'absolute',
+									top: '5px',
+									right: '5px',
+								}}
+								onClick={() => setOpenModal(false)}>
+								<CloseIcon />
+							</IconButton>
+							<Typography
+								id='modal-modal-title'
+								fontWeight={500}
+								textAlign='center'
+								mb={2}>
+								Пригласить друга по Email
+							</Typography>
+							<Box sx={{ display: 'flex', gap: '15px' }}>
+								<OutlinedInput
+									value={email}
+									placeholder='Введите email для приглашения'
+									fullWidth
+									onChange={(e) => setEmail(e.target.value)}
+									color='secondary'
+								/>
+								<Button
+									className={styles.submitBtn}
+									sx={{
+										textTransform: 'none',
+										fontSize: '14px',
+										backgroundColor: 'transparent',
+										color: '#000',
+										'&:hover': {
+											backgroundColor:
+												'var(--bg-base-btn)',
+										},
+									}}
+									onClick={() => {
+										email &&
+											mutate({
+												board_id: board_id as string,
+												user_id: id as number,
+												email,
+											});
+									}}>
+									Отправить
+								</Button>
+							</Box>
+						</Box>
 					</Box>
-				</Box>
-			</Modal>
+				</Portal>
+			)}
 		</Box>
 	);
 };

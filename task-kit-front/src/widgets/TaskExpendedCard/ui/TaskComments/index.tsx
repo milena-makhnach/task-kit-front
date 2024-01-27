@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import { createComment } from '@/shared/api/comment';
 
 import actionIcon from '@/assets/icons/comments.svg';
+import dayjs from 'dayjs';
 
 type TaskCommentsPropsType = {
 	prevComments: CommentResponseType[];
@@ -24,7 +25,7 @@ export const TaskComments: FC<TaskCommentsPropsType> = ({ prevComments }) => {
 
 	const [isCommentOpen, setIsCommentOpen] = useState<boolean>(false);
 	const [comment, setComment] = useState<string>('');
-	const [comments, setComments] = useState<any>([]);
+	const [comments, setComments] = useState<CommentResponseType[]>([]);
 
 	const { mutate: createNewComment } = useMutation({
 		mutationFn: createComment,
@@ -85,7 +86,15 @@ export const TaskComments: FC<TaskCommentsPropsType> = ({ prevComments }) => {
 								Сохранить
 							</Button>
 							<Button
-								sx={{ textTransform: 'none', fontSize: '14px' }}
+								sx={{
+									textTransform: 'none',
+									fontSize: '14px',
+									backgroundColor: 'transparent',
+									color: '#000',
+									'&:hover': {
+										backgroundColor: 'var(--bg-base-btn)',
+									},
+								}}
 								onClick={() => {
 									setIsCommentOpen(false);
 								}}>
@@ -106,30 +115,68 @@ export const TaskComments: FC<TaskCommentsPropsType> = ({ prevComments }) => {
 				sx={{
 					display: 'flex',
 					flexDirection: 'column',
-					gap: '10px',
+					gap: '20px',
 				}}>
-				{comments.map((comment: any) => (
+				{comments.map((comment) => (
 					<Box sx={{ display: 'flex', gap: '12px' }}>
 						<UserAvatar
 							firstname={comment.user.first_name}
 							lastname={comment.user.last_name}
 							avatar={comment.user.avatar || ''}
 						/>
-						<Box
-							sx={{
-								width: '100%',
-								padding: '10px',
-								paddingRight: '20px',
-								background: 'white',
-								borderRadius: '3px',
-								fontSize: '14px',
-								fontWeight: 500,
-							}}>
-							<div
-								dangerouslySetInnerHTML={{
-									__html: comment.text,
-								}}
-							/>
+						<Box sx={{ width: '100%' }}>
+							<Box
+								sx={{
+									display: 'flex',
+									alignItems: 'center',
+									gap: '10px',
+									marginBottom: '3px',
+								}}>
+								<Typography
+									sx={{ fontSize: '14px' }}
+									fontWeight={600}>
+									{user.firstname} {user.lastname}
+								</Typography>
+								<Typography sx={{ fontSize: '10px' }}>
+									{dayjs(comment.created_at)
+										.locale('ru')
+										.format('D MMM YYYY [г.] в HH:mm')}
+								</Typography>
+							</Box>
+							<Box
+								sx={{
+									width: '100%',
+									padding: '10px',
+									paddingRight: '20px',
+									background: 'white',
+									borderRadius: '3px',
+									fontSize: '14px',
+									fontWeight: 500,
+								}}>
+								<div
+									dangerouslySetInnerHTML={{
+										__html: comment.text,
+									}}
+								/>
+							</Box>
+							<Box className={styles.commentActions}>
+								<ul>
+									<li>
+										<Typography
+											component='span'
+											sx={{ fontSize: '12px' }}>
+											Изменить
+										</Typography>
+									</li>
+									<li>
+										<Typography
+											component='span'
+											sx={{ fontSize: '12px' }}>
+											Удалить
+										</Typography>
+									</li>
+								</ul>
+							</Box>
 						</Box>
 					</Box>
 				))}
